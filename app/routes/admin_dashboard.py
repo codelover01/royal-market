@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from ..models.users import User
-from ..models.products import Product
-from ..models.orders import Order
+from models.users import User
+from models.products import Product
+from models.orders import Order
 
 admin_dashboard_bp = Blueprint('admin_dashboard', __name__, url_prefix='/admin')
 

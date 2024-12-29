@@ -3,9 +3,9 @@ A module that carries out all the apps related authentication processes.
 """
 from flask import Blueprint, request, jsonify, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from ..services.authService import AuthService
-from ..models.users import User
-from ..utils.email_utils import send_password_reset_email, send_verification_email
+from services.authService import AuthService
+from models.users import User
+from utils.email_utils import send_password_reset_email, send_verification_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 

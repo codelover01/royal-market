@@ -24,8 +24,8 @@ class Order(BaseModel):
     
     __tablename__ = 'orders'
     
-    user_id = db.Column(db.String(255), db.ForeignKey('users.id'), nullable=False)
-    product_id = db.Column(db.String(255), db.ForeignKey('products.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     total_price = db.Column(db.Float, nullable=False)
     

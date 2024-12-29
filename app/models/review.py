@@ -5,8 +5,8 @@ from .baseModel import BaseModel
 class Review(BaseModel):
     __tablename__ = 'reviews'
     
-    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
-    product_id = db.Column(db.String(36), db.ForeignKey('products.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     rating = db.Column(db.Integer, nullable=False)  # e.g., 1-5
     comment = db.Column(db.Text, nullable=True)
     review_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))

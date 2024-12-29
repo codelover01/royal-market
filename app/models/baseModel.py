@@ -1,13 +1,12 @@
 from flask import Flask
 from . import db
 from datetime import datetime, timezone
-import uuid
 
 
 class BaseModel(db.Model):
     """Base class for all models, inherits from SQLAlchemy's Model class"""
     __abstract__ = True  # To avoid creating a table for BaseModel itself
-    id = db.Column(db.Integer, primary_key=True, nullable = False)
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable = False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 

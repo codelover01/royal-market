@@ -1,14 +1,30 @@
 from flask import Blueprint, request, jsonify, redirect, url_for
 from flask_login import current_user
-from ..models.business import Business
-from ..models.services import Service
+from models.business import Business
+from models.services import Service
 
 services_bp = Blueprint('services', __name__, url_prefix='/services')
 
 
 @services_bp.route("/add_services", methods=["POST"])
 def add_service():
-    """ Endpoint that handles addition of services """
+    """ Endpoint that handles addition of services
+    Args:
+        - owner_id: ID of the current business owner
+        - business_id: Business ID to which the service belongs.
+        - name: service name
+        - description: service description
+        - hourly_cost: service cost or price per hour
+        - duration: how long the service lasts or takes place
+    Returns:
+        - Response(Status code: 400) for invalid JSON data.
+        - Response(Status code: 403) if Current user owns no business
+        - Response(Status code: 400) if Business ID is missing or not provided.
+        - Response(Status code: 403) for invalid Business ID or current user
+        does not own this particular business.
+        - Response(Status code: 201) on successful service creation
+        - Response(Status code: 500) for any database related errors.
+    """
     data = request.get_json()
     if not data:
         return jsonify({"error": "Invalid JSON"}), 400

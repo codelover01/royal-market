@@ -6,7 +6,7 @@ class Payment(BaseModel):
     """ Handles payments for orders, products, services etc"""
     __tablename__ = 'payments'
     
-    order_id = db.Column(db.String(36), db.ForeignKey('orders.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     payment_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     payment_method = db.Column(db.String(50), nullable=False)  # e.g., credit card, PayPal
     payment_amount = db.Column(db.Float, nullable=False)

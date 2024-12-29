@@ -13,7 +13,7 @@ class User(BaseModel, UserMixin):
     """User class for managing user accounts"""
 
     __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)

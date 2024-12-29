@@ -23,8 +23,8 @@ class Business(BaseModel):
         nullable = False
     )
     owner_id = db.Column(
-        db.Integer,  # Ensure this is Integer to match User's id column
-        db.ForeignKey('users.user_id'),
+        db.Integer,
+        db.ForeignKey('users.id'),
         nullable=False
     )
     online_available = db.Column(

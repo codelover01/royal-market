@@ -1,7 +1,7 @@
 from flask_mail import Message
 from flask import url_for
 from typing import TYPE_CHECKING
-from ..models.users import User
+from models.users import User
 
 
 def send_password_reset_email(user: User):

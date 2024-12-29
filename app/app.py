@@ -2,8 +2,9 @@ from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
-from .models.users import login_manager, db, bcrypt
+from models.users import login_manager, db, bcrypt
 from flask_migrate import Migrate
+import os
 
 csrf = CSRFProtect()
 mail = Mail()
@@ -12,12 +13,14 @@ mail = Mail()
 app = Flask(__name__)
 
 # Import Configurations
-from .config import Config
-app.config.from_object(Config)
+from config import Config, TestConfig
 
-if app.config['TESTING']:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Check if testing
+if os.getenv('FLASK_ENV') == 'testing' or os.getenv('TESTING') == 'True':
+    app.config.from_object(TestConfig)
+else:
+    app.config.from_object(Config)
+
     
 cors = CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "/*"}})
 
@@ -31,12 +34,12 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 
 # Import blueprints
-from .routes.auth import auth_bp as auth_bp
-from .services.products import products_bp as products_bp
-from .routes.generate_csrf import gen_csrf_bp as gen_csrf_bp
-from .services.services import services_bp as services_bp
-from .routes.user_dashboard import user_dashboard_bp as user_dashboard_bp
-from .routes.admin_dashboard import admin_dashboard_bp as admin_dashboard_bp
+from routes.auth import auth_bp as auth_bp
+from services.products import products_bp as products_bp
+from routes.generate_csrf import gen_csrf_bp as gen_csrf_bp
+from services.services import services_bp as services_bp
+from routes.user_dashboard import user_dashboard_bp as user_dashboard_bp
+from routes.admin_dashboard import admin_dashboard_bp as admin_dashboard_bp
 
 
 # Register blueprints

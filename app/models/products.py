@@ -15,7 +15,7 @@ class Product(BaseModel):
         nullable = False
     )
     description = db.Column(
-        db.Text(255),
+        db.Text,
         nullable = False
         )
     price = db.Column(
