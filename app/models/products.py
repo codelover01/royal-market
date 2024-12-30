@@ -22,7 +22,7 @@ class Product(BaseModel):
         db.Float,
         nullable = False
         )
-    quantit = db.Column(
+    quantity = db.Column(
         db.Integer,
         nullable = False
     )

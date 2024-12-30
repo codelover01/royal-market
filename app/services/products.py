@@ -50,6 +50,7 @@ def add_product():
             description = data.get("description", ""),
             price = data["price"],
             quantity = data['quantity'],
+            stock = data['stock'],
             business_id = business.id
         )
         product.save()  # Using BaseModel's save method
