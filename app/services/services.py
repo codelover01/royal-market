@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, redirect, url_for
 from flask_login import current_user
 from models.business import Business
 from models.services import Service
+from sqlalchemy.exc import IntegrityError
 
 services_bp = Blueprint('services', __name__, url_prefix='/services')
 
@@ -57,6 +58,7 @@ def add_service():
             "message": "Service added successfully",
             "New Service": new_service.to_dict()
             }), 201
+    # except IntegrityError as e:
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     

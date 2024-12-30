@@ -5,6 +5,9 @@ from flask_wtf.csrf import CSRFProtect
 from models.users import login_manager, db, bcrypt
 from flask_migrate import Migrate
 import os
+from flask import jsonify, make_response
+from flask_wtf.csrf import CSRFProtect, generate_csrf
+csrf = CSRFProtect()
 
 csrf = CSRFProtect()
 mail = Mail()
@@ -34,6 +37,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 
 # Import blueprints
+from services.business import business_bp as business_bp
 from routes.auth import auth_bp as auth_bp
 from services.products import products_bp as products_bp
 from routes.generate_csrf import gen_csrf_bp as gen_csrf_bp
@@ -43,12 +47,19 @@ from routes.admin_dashboard import admin_dashboard_bp as admin_dashboard_bp
 
 
 # Register blueprints
+app.register_blueprint(business_bp, url_prefix='/business')
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(gen_csrf_bp, url_prefix='/gen_csrf')
 app.register_blueprint(products_bp, url_prefix='/products')
 app.register_blueprint(services_bp, url_prefix='/services')
 app.register_blueprint(user_dashboard_bp, url_prefix='/user')
 app.register_blueprint(admin_dashboard_bp, url_prefix='/admin')
+
+@app.before_request
+def set_csrf_cookie():
+    csrf_token = generate_csrf()
+    response = make_response(jsonify({'message': 'CSRF token set'}))
+    response.set_cookie('csrf_token', csrf_token)
 
 
 @app.route('/')

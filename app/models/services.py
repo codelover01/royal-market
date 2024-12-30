@@ -35,3 +35,5 @@ class Service(BaseModel):
 
     def __repr__(self):
          return f"<Service {self.name}, Hourly Cost: {self.hourly_cost}>"
+    
+    

@@ -22,7 +22,7 @@ def admin_dashboard():
 def admin_products():
     """View or add products"""
     if request.method == 'GET':
-        products = Product.query.all()
+        products: Product = Product.find_by_attributes()
         return jsonify({"products": [p.to_dict() for p in products]})
     elif request.method == 'POST':
         data = request.get_json()
