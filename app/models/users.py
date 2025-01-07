@@ -23,7 +23,7 @@ class User(BaseModel, UserMixin):
 
     # Relationships
     business = db.relationship('Business', back_populates='user')
-    reviews = db.relationship('Reviews', back_populates='user')
+    reviews = db.relationship('Review', back_populates='user')
     orders = db.relationship('Order', back_populates='user')
     wishlist = db.relationship('Wishlist', back_populates='user')
 

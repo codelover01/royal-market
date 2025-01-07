@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify, redirect, url_for
 from flask_login import current_user
 from models.business import Business
 from models.services import Service
-from sqlalchemy.exc import IntegrityError
 
 services_bp = Blueprint('services', __name__, url_prefix='/services')
 

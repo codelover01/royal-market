@@ -29,6 +29,12 @@ class Business(BaseModel):
         db.ForeignKey('users.id'),
         nullable=False
     )
+    business_id = db.Column(
+        db.Integer,
+        db.ForeignKey('products.id'),
+        nullable = False
+    )
+    review_id = db.Column(db.Integer, db.ForeignKey('reviews.id'), nullable = True)
     online_available = db.Column(
         db.Boolean,
         default=True
@@ -41,8 +47,8 @@ class Business(BaseModel):
     # Relationships
     user = db.relationship('User', back_populates='business')
     product = db.relationship('Product', back_populates='business')
-    service = db.relationship('Service', back_populates='business')
-    reviews = db.relationship('Reviews', back_populates='business')
+    services= db.relationship('Service', back_populates='business')
+    reviews = db.relationship('Review', back_populates='business')
 
     @staticmethod
     def create_business(data: dict, current_user: User) -> tuple[dict, int]:

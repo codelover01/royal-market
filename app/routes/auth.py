@@ -1,8 +1,15 @@
 """
 A module that carries out all the apps related authentication processes.
 """
-from flask import Blueprint, request, jsonify, redirect, url_for
-from flask_login import login_user, login_required, logout_user, current_user
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+from flask import Blueprint, request, jsonify, make_response
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token, jwt_required,
+    get_jwt_identity
+    )
 from services.authService import AuthService
 from models.users import User
 from utils.email_utils import send_password_reset_email, send_verification_email
@@ -13,7 +20,14 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/register/', methods=['GET', 'POST'], strict_slashes=False)
 def register():
     """ Registers a new user"""
+    # Debug CSRF Tokens
+    csrf_header = request.headers.get('X-CSRFToken')
+    csrf_cookie = request.cookies.get('csrf_token')
+    logging.debug(f"CSRF Header Token: {csrf_header}")
+    logging.debug(f"CSRF Cookie Token: {csrf_cookie}")
+
     data = request.get_json()
+    logging.debug(f"Received data: {data}")
     if not data:
         return jsonify({'error': 'Invalid JSON'}), 400
     try:
@@ -22,43 +36,77 @@ def register():
             'message': 'User registered successfully',
             'user': user.to_json()
             }), 201
+    
+    except ValueError as e:
+        logging.error(f"ValueError: {e}")
+        return jsonify({"error": str(e)}), 400
     except Exception as e:
+        logging.exception("Unexpected error occurred during registration")
         return jsonify({"error": str(e)}), 500
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login():
     """ Logins a user """
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'Invalid JSON'}), 400
-    email = data.get('email')
-    password = data.get('password')
-    if not email or not password:
-        return jsonify({
-            'error': 'Email and password required.'
-            }), 400
-    
-    user = AuthService.authenticate_user(email, password)
-    if user:
-        login_user(user)  # Logs in the user and sets session
-        return jsonify({
-            'message': 'Login successfully',
-            'user': user.to_json()
-            }), 200
-    return jsonify({'error': 'Invalid email or password'}), 401
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid JSON'}), 400
+        email = data.get('email')
+        password = data.get('password')
+        if not email or not password:
+            return jsonify({
+                'error': 'Email and password required.'
+                }), 400
+        
+        user = AuthService.authenticate_user(email, password)
+        if user:
+            access_token = create_access_token(identity=user['username'])
+            
+            # Create the refresh token
+            refresh_token = create_refresh_token(identity=user['username'])
+
+            # Create response object
+            response = make_response(jsonify({
+                'message': 'Login successfl'
+            }), 200)
+            
+            # Set the refresh token as an HTP-only cookie
+            response.set_cookie(
+                'refresh_token', refresh_token, httponly=False,
+                secure=True, samesite='Lax', max_age=604800
+                )
+            
+            # Return access token in response body
+            response.json['access_token'] = access_token
+            return response
+    except Exception as e:
+        return jsonify(
+            {
+                'error': 'Invalid email or password',
+                'error_info': str(e)
+                }), 401
 
 
 @auth_bp.route('/logout', methods=['POST'], strict_slashes=False)
-@login_required
+@jwt_required
 def logout():
     """ Logs the current user out."""
-    logout_user()  # Logs out the current user
     return jsonify({"message": "Logout successful"}), 200
 
+@auth_bp.route('/refresh', methods=['POST'], strict_slashes=False)
+@jwt_required(refresh=True)
+def refresh():
+    """ Refresh the access token using thhe refresh token stored in cookie """
+    # Get current user from the refresh token
+    current_user = get_jwt_identity()
 
-@auth_bp.route('/password-reset-request', methods=['GET','POST'], strict_slashes=False)
-def password_reset_request():
+    # Create a new access token
+    new_access_token = create_access_token(identity=current_user)
+    return jsonify(access_token=new_access_token), 200
+
+@auth_bp.route('/request-password-reset', methods=['GET','POST'], strict_slashes=False)
+def request_password_reset():
     """ Requests for a password reset
     Args:
         email: user's email
@@ -112,8 +160,8 @@ def password_reset_token(token):
         "message": "Password has been reset successfully."
         }), 200
 
-@auth_bp.route('/verify-email-request', methods = ['GET', 'POST'], strict_slashes = False)
-def verify_email_request():
+@auth_bp.route('/request-verify-email', methods = ['GET', 'POST'], strict_slashes = False)
+def request_verify_email():
     """ Verifies the validity of an email
     Args:
         email: Email to verify

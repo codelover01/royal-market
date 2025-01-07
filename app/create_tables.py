@@ -1,5 +1,11 @@
 """ A module that automates the database model tables' creation. """
-from app import app
+
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from app.app import app
 from models import db
 
 def create_database_tables():

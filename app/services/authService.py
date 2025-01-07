@@ -16,6 +16,15 @@ class AuthService():
         Returns:
             The registered user after saving to the database.
         """
+        # Check if passwords match
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+        if password != confirm_password:
+            raise ValueError("Passwords do not match.")
+        
+        # Remove 'confirm_password' from the data to avoid passing it to the User model
+        data.pop('confirm_password', None)
+
         user = User(**data)
         user.password = data.get('password')
         user.save()

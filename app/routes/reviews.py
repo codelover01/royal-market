@@ -1,0 +1,105 @@
+# routes/review_routes.py
+from flask import Blueprint, jsonify, request, abort
+from flask_login import current_user
+from flask_jwt_extended import jwt_required
+from services.reviews import ReviewService
+from models.review import Review
+
+review_bp = Blueprint('review', __name__, url_prefix='/review')
+
+
+@review_bp.route('/create-reviews', methods=['POST'])
+@jwt_required()
+def create_review():
+    """Create a new review."""
+    data = request.get_json()
+
+    if 'comment' not in data or 'rating' not in data:
+        abort(400, description="Missing required fields: comment and rating")
+
+    comment = data['comment']
+    rating = data['rating']
+    product_id = data.get('product_id')
+    service_id = data.get('service_id')
+
+    review, error = ReviewService.create_review(comment, rating, current_user.id, product_id, service_id)
+
+    if error:
+        return jsonify({'message': error}), 400
+
+    return jsonify({
+        'id': review.id,
+        'comment': review.comment,
+        'rating': review.rating,
+        'created_at': review.created_at
+    }), 201
+
+
+@review_bp.route('/get-reviews/<string:review_type>/<int:item_id>', methods=['GET'])
+def get_reviews(review_type, item_id):
+    """Retrieve reviews for a specific product or service."""
+    reviews = []
+
+    if review_type == 'product':
+        reviews = ReviewService.get_reviews_by_product(item_id)
+    elif review_type == 'service':
+        reviews = ReviewService.get_reviews_by_service(item_id)
+    else:
+        return jsonify({'message': 'Invalid review type. Use "product" or "service".'}), 400
+
+    if not reviews:
+        return jsonify({'message': f'No reviews found for this {review_type}.'}), 404
+
+    reviews_list = [{
+        'id': review.id,
+        'user': review.user.username if review.user else 'Unknown',
+        'comment': review.comment,
+        'rating': review.rating,
+        'review_date': review.created_at
+    } for review in reviews]
+
+    return jsonify({'reviews': reviews_list}), 200
+
+
+@review_bp.route('/update-reviews/<int:review_id>', methods=['PUT'])
+@jwt_required()
+def update_review(review_id):
+    """Update an existing review."""
+    data = request.get_json()
+    review = Review.query.get_or_404(review_id)
+
+    if review.user_id != current_user.id:
+        return jsonify({'message': 'You can only edit your own reviews.'}), 403
+
+    updated_review, error = ReviewService.update_review(
+        review,
+        comment=data.get('comment'),
+        rating=data.get('rating')
+    )
+
+    if error:
+        return jsonify({'message': error}), 400
+
+    return jsonify({
+        'id': updated_review.id,
+        'comment': updated_review.comment,
+        'rating': updated_review.rating,
+        'created_at': updated_review.created_at
+    }), 200
+
+
+@review_bp.route('/delete-reviews/<int:review_id>', methods=['DELETE'])
+@jwt_required()
+def delete_review(review_id):
+    """Delete an existing review."""
+    review = Review.query.get_or_404(review_id)
+
+    if review.user_id != current_user.id:
+        return jsonify({'message': 'You can only delete your own reviews.'}), 403
+
+    _, error = ReviewService.delete_review(review)
+
+    if error:
+        return jsonify({'message': error}), 400
+
+    return jsonify({'message': 'Review deleted successfully.'}), 200

@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
-from flask_login import current_user, login_required
+from flask_login import current_user
+from flask_jwt_extended import jwt_required
 from models.business import Business, BuinsessException
 
 
 business_bp = Blueprint('business', __name__, url_prefix='/business')
 
 @business_bp.route('/create_business', methods=['POST'], strict_slashes=False)
-@login_required
+@jwt_required
 def create() -> tuple[dict[str, str], int]:
     """ Adds a new business to the database
     Args:
@@ -35,7 +36,7 @@ def create() -> tuple[dict[str, str], int]:
             }), 500
     
 @business_bp.route('/update_business', methods = ['PUT', 'POST'])
-@login_required
+@jwt_required
 def update(business_id: int) -> tuple[dict[str, str], int]:
     """
     Handles the update of business credentials.
@@ -79,7 +80,7 @@ def update(business_id: int) -> tuple[dict[str, str], int]:
             )
 
 @business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE', 'POST'], strict_slashes = False)
-@login_required
+@jwt_required
 def delete(business_id: int) -> tuple[dict[str, str], int]:
     """
     Deletes or remove a business from the database by it's ID
@@ -111,7 +112,7 @@ def delete(business_id: int) -> tuple[dict[str, str], int]:
         }), 500
 
 @business_bp.route('/get_businessses', methods = ['GET'], strict_slashes = False)
-@login_required
+@jwt_required
 def get():
     """
     Gets all the businesses in the database according to the User_id

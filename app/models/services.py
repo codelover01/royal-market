@@ -13,6 +13,12 @@ class Service(BaseModel):
         db.ForeignKey('business.id'),
         nullable = False
         )
+    
+    order_id = db.Column(
+        db.Integer,
+        db.ForeignKey('orders.id'),
+        nullable = False
+        )
     description = db.Column(
         db.Text,
         nullable = False
@@ -28,7 +34,7 @@ class Service(BaseModel):
 
     # Relationship to access related business easily
     business = db.relationship('Business', back_populates='services')
-    Reviews = db.relationship('Reviews', back_populates='service')
+    reviews =db.relationship('Review', back_populates='service')
     order = db.relationship('Order', back_populates='service')
     payment = db.relationship('Payment', back_populates='service')
     wishlist = db.relationship('Wishlist', back_populates='service')
