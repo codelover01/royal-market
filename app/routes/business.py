@@ -8,7 +8,7 @@ business_bp = Blueprint('business', __name__, url_prefix='/business')
 
 @business_bp.route('/create_business', methods=['POST'], strict_slashes=False)
 @jwt_required
-def create() -> tuple[dict[str, str], int]:
+def create_business() -> tuple[dict[str, str], int]:
     """ Adds a new business to the database
     Args:
         data
@@ -37,7 +37,7 @@ def create() -> tuple[dict[str, str], int]:
     
 @business_bp.route('/update_business/<int:business_id>', methods = ['PUT'])
 @jwt_required
-def update(business_id: int) -> tuple[dict[str, str], int]:
+def update_business(business_id: int) -> tuple[dict[str, str], int]:
     """
     Handles the update of business credentials.
     """
@@ -84,7 +84,7 @@ def update(business_id: int) -> tuple[dict[str, str], int]:
 
 @business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE'], strict_slashes = False)
 @jwt_required
-def delete(business_id: int) -> tuple[dict[str, str], int]:
+def delete_business(business_id: int) -> tuple[dict[str, str], int]:
     """
     Deletes or remove a business from the database by it's ID
     """
@@ -113,7 +113,7 @@ def delete(business_id: int) -> tuple[dict[str, str], int]:
 
 @business_bp.route('/get_businessses', methods = ['GET'], strict_slashes = False)
 @jwt_required
-def get():
+def get_business():
     """
     Gets all the businesses in the database according to the User_id
     """
