@@ -35,7 +35,7 @@ def create() -> tuple[dict[str, str], int]:
             'error': 'An unexpected error occurred.', 'details': str(e)
             }), 500
     
-@business_bp.route('/update_business', methods = ['PUT'])
+@business_bp.route('/update_business/<int:business_id>', methods = ['PUT'])
 @jwt_required
 def update(business_id: int) -> tuple[dict[str, str], int]:
     """
@@ -49,19 +49,22 @@ def update(business_id: int) -> tuple[dict[str, str], int]:
             }), 400
 
         business: Business = Business.get_or_404(business_id)
+        if not business:
+            return jsonify({'message': "Invalid Business ID"}), 400
 
         # Ensure ownership
         if business.owner_id != current_user.id:
             return jsonify({'error': 'Unauthorized: You do not own this business.'}), 403
 
         # Update fields
-        business.name = data.get('name')
-        business.email = data.get('email')
+        business.name = data.get('name', business.name)
+        business.email = data.get('email', business.email)
         business.description = data.get('description', business.description)
-        business.location = data.get('location')
-        business.online_available = data.get('online_available')
-        business.offline_available = data.get('offline_available')
+        business.location = data.get('location', business.location)
+        business.online_available = data.get('online_available', business.online_available)
+        business.offline_available = data.get('offline_available', business.offline_available)
         business.save()
+
         return jsonify({
             'Message': 'Business updated successfully.'
         }), 200
