@@ -6,7 +6,8 @@ from models.business import Business, BusinessException
 
 business_bp = Blueprint('business', __name__, url_prefix='/business')
 
-@business_bp.route('/create_business', methods=['POST'], strict_slashes=False)
+@business_bp.route('/create_business', methods=['POST'], strict_slashes=False,
+                   endpoint='create_business')
 @jwt_required
 def create_business() -> tuple[dict[str, str], int]:
     """ Adds a new business to the database
@@ -35,7 +36,8 @@ def create_business() -> tuple[dict[str, str], int]:
             'error': 'An unexpected error occurred.', 'details': str(e)
             }), 500
     
-@business_bp.route('/update_business/<int:business_id>', methods = ['PUT'])
+@business_bp.route('/update_business/<int:business_id>', methods = ['PUT'],
+                   endpoint='update_business')
 @jwt_required
 def update_business(business_id: int) -> tuple[dict[str, str], int]:
     """
@@ -82,7 +84,8 @@ def update_business(business_id: int) -> tuple[dict[str, str], int]:
                 details = {'error_info': {str(e)}}
             )
 
-@business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE'], strict_slashes = False)
+@business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE'], strict_slashes = False,
+                   endpoint='delete_business')
 @jwt_required
 def delete_business(business_id: int) -> tuple[dict[str, str], int]:
     """
@@ -111,7 +114,8 @@ def delete_business(business_id: int) -> tuple[dict[str, str], int]:
             "error": str(e)
         }), 500
 
-@business_bp.route('/get_businessses', methods = ['GET'], strict_slashes = False)
+@business_bp.route('/get_businessses', methods = ['GET'], strict_slashes = False,
+                   endpoint='get_business')
 @jwt_required
 def get_business():
     """
