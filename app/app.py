@@ -64,7 +64,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 
 # Import blueprints
-from services.business import business_bp as business_bp
+from routes.business import business_bp as business_bp
 from routes.auth import auth_bp as auth_bp
 from services.reviews import review_bp as review_bp
 from services.products import products_bp as products_bp
