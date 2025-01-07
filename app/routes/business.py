@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import current_user
 from flask_jwt_extended import jwt_required
-from models.business import Business, BuinsessException
+from models.business import Business, BusinessException
 
 
 business_bp = Blueprint('business', __name__, url_prefix='/business')
@@ -27,7 +27,7 @@ def create() -> tuple[dict[str, str], int]:
                 'message': 'Business created successfully',
                 'New_business': new_business.to_dict()
                 }), 201
-    except BuinsessException as e:
+    except BusinessException as e:
         return jsonify({(e.to_dict()), e.code})
     
     except Exception as e:
@@ -35,7 +35,7 @@ def create() -> tuple[dict[str, str], int]:
             'error': 'An unexpected error occurred.', 'details': str(e)
             }), 500
     
-@business_bp.route('/update_business', methods = ['PUT', 'POST'])
+@business_bp.route('/update_business', methods = ['PUT'])
 @jwt_required
 def update(business_id: int) -> tuple[dict[str, str], int]:
     """
@@ -67,28 +67,25 @@ def update(business_id: int) -> tuple[dict[str, str], int]:
         }), 200
 
     except KeyError as e:
-        raise BuinsessException(
+        raise BusinessException(
                 message = 'Missing required field.',
                 code = 400,
                 details = {'KeyError_info': {str(e)}}
             )
     except Exception as e:
-        raise BuinsessException(
+        raise BusinessException(
                 message = 'An unexpected error occurred.',
                 code = 500,
                 details = {'error_info': {str(e)}}
             )
 
-@business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE', 'POST'], strict_slashes = False)
+@business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE'], strict_slashes = False)
 @jwt_required
 def delete(business_id: int) -> tuple[dict[str, str], int]:
     """
     Deletes or remove a business from the database by it's ID
     """
     try:
-        data = request.get_json()
-        business_id = data.get_or_404('business.id')
-
         # Ensure the business belons to the current user
         business: Business = Business.find_first_object(
             id = business_id, owner_id = current_user.id
@@ -103,7 +100,7 @@ def delete(business_id: int) -> tuple[dict[str, str], int]:
         return jsonify({
             "messaage": "Business deleted successfully"
         }), 200
-    except BuinsessException as e:
+    except BusinessException as e:
         return jsonify({
             'error': e.message, 'details': e.details}), e.code
     except Exception as e:

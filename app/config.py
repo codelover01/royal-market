@@ -6,7 +6,7 @@ from datetime import timedelta
 load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-print(os.getenv('DATABASE_URL'))
+# print(os.getenv('DATABASE_URL'))
 
 class Config:
     SQLALCHEMY_ECHO = True

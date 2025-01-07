@@ -82,38 +82,38 @@ class Business(BaseModel):
             
             if 'Duplicate entry' in error_message:
                 if 'for key \'business.name\'' in error_message:
-                    raise BuinsessException(
+                    raise BusinessException(
                         message = 'Business name already exists. Please choose a different name',
                         code = 400,
                         field = 'name'
                     )
                 if 'for key \'business.email\'' in error_message:
-                    raise BuinsessException(
+                    raise BusinessException(
                         message = 'Business email already exists. Please choose a different email.',
                         code = 400,
                         field = 'email'
                     )
-            raise BuinsessException(
+            raise BusinessException(
                 message = 'A database integrity error occurred.',
                 code = 500,
                 details = {'error_info': error_message}
             )
 
         except KeyError as e:
-            raise BuinsessException(
+            raise BusinessException(
                 message = 'Missing required field.',
                 code = 400,
                 details = {'KeyError_info': {str(e)}}
             )
         except Exception as e:
-            raise BuinsessException(
+            raise BusinessException(
                 message = 'An unexpected error occurred.',
                 code = 500,
                 details = {'error_info': {str(e)}}
             )
 
 
-class BuinsessException(Exception):
+class BusinessException(Exception):
     """ Custom exception for business-specific errors. """
     def __init__(self, message:str, code: int = 400, field: str = None, details: dict = None):
         """
