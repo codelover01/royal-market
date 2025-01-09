@@ -71,6 +71,7 @@ def send_verification_email(user: User):
         smtp.ehlo()
         smtp.starttls()
         smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')
+
         
         # Send the email
         smtp.sendmail('royalmarketv1@gmail.com', user.email, msg)

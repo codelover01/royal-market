@@ -14,6 +14,7 @@ class WishlistService:
             db.session.add(item)
             db.session.commit()
             return item
+
         elif service_id:
             existing_item = Wishlist.query.filter_by(user_id=user_id, service_id=service_id).first()
             if existing_item:

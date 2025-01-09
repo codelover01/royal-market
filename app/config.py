@@ -37,6 +37,9 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
+    # SMTP CONFIGURATIONS
+    login = os.getenv('login')
+
 
 class TestConfig(Config):
     TESTING = os.getenv("TESTING")

@@ -11,11 +11,25 @@ review_bp = Blueprint('review', __name__, url_prefix='/review')
 @review_bp.route('/create-reviews', methods=['POST'])
 @jwt_required()
 def create_review():
-    """Create a new review."""
+    """Create a new review.
+    This endpoint allows authenticated users to create a new review.
+    A review must include a `comment` and a `rating` between 1 and 5.
+
+    Returns:
+        JSON response containing the created review details.
+        HTTP Status Code:
+            - 201: Review created successfully.
+            - 400: Missing fields or invalid rating.
+    """
     data = request.get_json()
 
+    # Validate required fields.
     if 'comment' not in data or 'rating' not in data:
         abort(400, description="Missing required fields: comment and rating")
+
+    # Ensure the rating is between 1 and 5
+    if rating < 1 or rating > 5:
+        abort(400, description='Rating must be between 1 and 5')
 
     comment = data['comment']
     rating = data['rating']
@@ -37,7 +51,15 @@ def create_review():
 
 @review_bp.route('/get-reviews/<string:review_type>/<int:item_id>', methods=['GET'])
 def get_reviews(review_type, item_id):
-    """Retrieve reviews for a specific product or service."""
+    """Retrieve reviews for a specific product or service.
+    Args:
+        review_type (str): The type of the item ('product' or 'service').
+        item_id (int): The ID of the product or service.
+        reviews_list(list): list of reviews
+
+    Returns:
+        JSON response containing a list of reviews.
+    """
     reviews = []
 
     if review_type == 'product':
@@ -64,7 +86,20 @@ def get_reviews(review_type, item_id):
 @review_bp.route('/update-reviews/<int:review_id>', methods=['PUT'])
 @jwt_required()
 def update_review(review_id):
-    """Update an existing review."""
+    """Update an existing review.
+    This endpoint allows authenticated users to update their own reviews.
+    Only `comment` and `rating` fields can be updated.
+
+    Args:
+        review_id (int): The ID of the review to be updated.
+
+    Returns:
+        JSON response containing the updated review details.
+        HTTP Status Code:
+            - 200: Review updated successfully.
+            - 400: Invalid rating.
+            - 403: User is not authorized to update this review.
+    """
     data = request.get_json()
     review = Review.query.get_or_404(review_id)
 
@@ -91,13 +126,24 @@ def update_review(review_id):
 @review_bp.route('/delete-reviews/<int:review_id>', methods=['DELETE'])
 @jwt_required()
 def delete_review(review_id):
-    """Delete an existing review."""
-    review = Review.query.get_or_404(review_id)
+    """Delete an existing review.
+    This endpoint allows authenticated users to delete their own reviews.
+
+    Args:
+        review_id (int): The ID of the review to be deleted.
+
+    Returns:
+        JSON response indicating success or failure.
+        HTTP Status Code:
+            - 200: Review deleted successfully.
+            - 403: User is not authorized to delete this review.
+    """
+    review:Review = Review.query.get_or_404(review_id)
 
     if review.user_id != current_user.id:
         return jsonify({'message': 'You can only delete your own reviews.'}), 403
 
-    _, error = ReviewService.delete_review(review)
+    review, error = ReviewService.delete_review(review)
 
     if error:
         return jsonify({'message': error}), 400

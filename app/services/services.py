@@ -60,18 +60,37 @@ def add_service():
     # except IntegrityError as e:
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @services_bp.route("/list_services", methods=["GET"])
 def list_services():
-    """ Endpoint that handles listing of all services """
-    services: Service = Service.get_all()  # Using BaseModel's get_all method
+    """ Endpoint that handles listing of all services
+    Args:
+        - services: services listed
+    Returns:
+        - A list of services with 200 status code
+    """
+    services: Service = Service.get_all()
     return jsonify({
         "Services": [services.to_dict() for service in services]
         }), 200
 
+
 @services_bp.route('/delete_services/<int:service_id>', methods=['POST','DELETE'])
 def delete_service(service_id):
-    """Endpoint to delete a specific service by ID."""
+    """Endpoint to delete a specific service by ID.
+    Args:
+        - service_id(int): service ID for service to delete
+        - owner_id(int): owner of the busines to which the
+        service belongs to.
+        - business_id(int): ID of the business to which the service
+        belongs to.
+        - current_user: currently authenicated user
+    Returns:
+        - 403 for unauthorized ownership of business
+        - 200 for suuccessfully deleted business
+        - 500 for any other errors.
+    """
     try:
         # Fetch the service
         service: Service = Service.get_or_404(service_id)

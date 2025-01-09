@@ -8,7 +8,15 @@ wishlist_bp = Blueprint('wishlist', __name__, url_prefix='/wishlist')
 @wishlist_bp.route('/get-wishlist', methods=['GET'])
 @login_required
 def get_wishlist():
-    """Get all items in the user's wishlist (products and services)."""
+    """Get all items in the user's wishlist (products and services).
+    Args:
+        - wishlist_items: - current user's wishlist
+        - item_data: Combination of the item ID and user ID
+        - result: list of products and services in the item_data
+    Returns:
+        - 404 with empty user wishlist
+        - 200 with successful result list.
+    """
     wishlist_items:WishlistService = WishlistService.find_by_user(current_user.id)
     if not wishlist_items:
         return jsonify({'message': 'Your wishlist is empty.'}), 404
@@ -38,7 +46,17 @@ def get_wishlist():
 @wishlist_bp.route('/add', methods=['POST'])
 @login_required
 def add_to_wishlist():
-    """Add a product or service to the wishlist."""
+    """Add a product or service to the wishlist.
+    Args:
+        - product_id(int): product ID
+        - service_id(int): service ID
+        - current_user: currently authenticated user.
+    Return:
+        - Product or Service added to the wishlist with
+        status code 201
+        - status code 400 for missing produc_id or
+        service_id
+    """
     data = request.get_json()
     product_id = data.get('product_id')
     service_id = data.get('service_id')
@@ -75,7 +93,17 @@ def add_to_wishlist():
 @wishlist_bp.route('/remove', methods=['POST'])
 @login_required
 def remove_from_wishlist():
-    """Remove a product or service from the wishlist."""
+    """Remove a product or service from the wishlist.
+    Args:
+        - product_id(int): product ID
+        - service_id(int): service ID
+        - current_user: currently authenticated user
+        - item: current product or service deleted.
+    Returns:
+        - 400 for missing product_id or service_id
+        - 404 for no product or service found
+        - 200 for deleted product or service 
+    """
     data = request.get_json()
     product_id = data.get('product_id')
     service_id = data.get('service_id')

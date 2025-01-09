@@ -161,7 +161,7 @@ def request_password_reset():
     }), 200
 
 
-@auth_bp.route('/password-reset/<token>', methods=['GET', 'POST'], strict_slashes = True)
+@auth_bp.route('/password-reset/<token>', methods=['GET', 'POST'], strict_slashes = False)
 def password_reset_token(token):
     """ Resets the password
     Args:
