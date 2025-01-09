@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_login import current_user
-from flask_jwt_extended import jwt_required
+# from flask_login import current_user
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.business import Business, BusinessException
 
 
@@ -21,18 +21,21 @@ def create_business() -> tuple[dict[str, str], int]:
             return jsonify({
                 'error': 'Invalid JSON.'
             }), 400
+        current_user = get_jwt_identity()
+        required_keys = ['name', 'email', 'owner_id', 'description', 'location']
+        if not all(key in data for key in required_keys):
+            return jsonify({'error': 'Missing required fields'}), 400
 
         # new_business: Business = Business.create_business(data, current_user)
-        new_business: Business = Business.create_business(data)
+        new_business: Business = Business.create_business(data, current_user)
         new_business.save()
         return jsonify({
                 'message': 'Business created successfully',
                 'New_business': new_business.to_dict()
                 }), 201
     except BusinessException as e:
-        # return jsonify({(e.to_dict()), e.code})
-        return jsonify({"error": {str(e)}})
-    
+        return jsonify({e.to_dict()}), e.code
+        # return jsonify( str(e))
     except Exception as e:
         return jsonify({
             'error': 'An unexpected error occurred.', 'details': str(e)
@@ -57,6 +60,7 @@ def update_business(business_id: int) -> tuple[dict[str, str], int]:
             return jsonify({'message': "Invalid Business ID"}), 400
 
         # Ensure ownership
+        current_user = get_jwt_identity()
         if business.owner_id != current_user.id:
             return jsonify({'error': 'Unauthorized: You do not own this business.'}), 403
 
@@ -94,6 +98,7 @@ def delete_business(business_id: int) -> tuple[dict[str, str], int]:
     Deletes or remove a business from the database by it's ID
     """
     try:
+        current_user = get_jwt_identity()
         # Ensure the business belons to the current user
         business: Business = Business.find_first_object(
             id = business_id, owner_id = current_user.id
@@ -123,6 +128,7 @@ def get_business():
     """
     Gets all the businesses in the database according to the User_id
     """
+    current_user = get_jwt_identity()
     # Retrieve all the businesses that belong to the current user
     businesses = Business.find_by_attributes(owner_id = current_user.id)
     if not businesses:

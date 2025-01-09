@@ -51,7 +51,7 @@ class Business(BaseModel):
 
     @staticmethod
     # def create_business(data: dict, current_user: User) -> tuple[dict, int]:
-    def create_business(data: dict) -> tuple[dict]:
+    def create_business(data: dict, current_user) -> 'Business':
         """ Creates a new business 
         Args:
             - data (): Data entered by user to create a new business
@@ -64,42 +64,21 @@ class Business(BaseModel):
             Raises IntegrityErrors, keyErrors or Exception errors on failure.
         """
         try:
-            name = data.get('name'),
-            email = data.get('email'),
-            owner_id = data.get('owner_id'),
-            description = data.get('description'),
-            location = data.get('location'),
+            name = data.get('name')
+            email = data.get('email')
+            owner_id = current_user.id
+            description = data.get('description')
+            location = data.get('location')
 
-            if [name, email, owner_id, description, location] not in data:
-                raise ValueError('Name, email, owner_id, description and location are needed')
             
-            new_business = Business(**data)
-                # name = data.get('name'),
-                # email = data.get('email'),
-                # owner_id = current_user.id,
-                # description = data.get('description'),
-                # location = data.get('location'),
-                # online_available = data.get('online_available'),
-                # offline_available = data.get('offline_available')
-            # )
-            # new_business = Business(
-            #     name = data['name'],
-            #     email = data['email'],
-            #     owner_id = current_user.id,
-            #     description = data['description'],
-            #     location = data['location'],
-            #     online_available = data['online_available'],
-            #     offline_available = data['offline_available']
-            # )
-            # new_business = Business({
-            # 'name': Business.name,
-            # 'email': Business.email,
-            # 'owner_id': Business.owner_id,
-            # 'description': Business.description,
-            # 'locaion': Business.location,
-            # 'online_available': Business.online_available,
-            # 'offline': Business.offline_available
-            # })
+            new_business = Business(
+                name = name,
+                email = email,
+                owner_id = owner_id,
+                description = description,
+                location = location,
+            )
+            
             new_business.save()
             return new_business
         
