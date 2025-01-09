@@ -19,7 +19,18 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_bp.route('/register/', methods=['GET', 'POST'], strict_slashes=False)
 def register():
-    """ Registers a new user"""
+    """ Registers a new user
+    Args:
+        - Data: User Registration required data
+                - Username
+                - email
+                - password
+                - firstname(Optional)
+                - lastname(Optional)
+    Returns:
+        - JSON responses and their status codes
+        - Jsonifies the successfully registered user with 201 status code
+    """
     # Debug CSRF Tokens
     csrf_header = request.headers.get('X-CSRFToken')
     csrf_cookie = request.cookies.get('csrf_token')
@@ -47,7 +58,18 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login():
-    """ Logins a user """
+    """ Logins a user 
+    Args:
+        email(str): User's email
+        password(str): User's password
+
+    Returns:
+        JSON responses and their status codes
+        200 : When the user is successfully logged in
+        400 : For Invalid JSON and missing (email and password)
+        401 : Invalid Email and password
+        500 : Any other exceptions
+    """
     try:
         data = request.get_json()
         if not data:
@@ -61,14 +83,16 @@ def login():
         
         user = AuthService.authenticate_user(email, password)
         if user:
-            access_token = create_access_token(identity=user['username'])
+            access_token = create_access_token(identity=user.username)
             
             # Create the refresh token
-            refresh_token = create_refresh_token(identity=user['username'])
+            refresh_token = create_refresh_token(identity=user.username)
 
             # Create response object
             response = make_response(jsonify({
-                'message': 'Login successfl'
+                'message': 'Login successful',
+                'access_token': access_token,
+                'refresh_token': refresh_token
             }), 200)
             
             # Set the refresh token as an HTP-only cookie
@@ -77,19 +101,27 @@ def login():
                 secure=True, samesite='Lax', max_age=604800
                 )
             
+            response.set_cookie(
+                'access_token', access_token, httponly=False,
+                secure=True, samesite='Lax', max_age=604800
+                )
+            
             # Return access token in response body
             response.json['access_token'] = access_token
             return response
+        return jsonify({
+            'error': 'Invalid email or password'
+        }), 401
     except Exception as e:
         return jsonify(
             {
-                'error': 'Invalid email or password',
+                'error': 'An error ocurred during the login',
                 'error_info': str(e)
-                }), 401
+                }), 500
 
 
 @auth_bp.route('/logout', methods=['POST'], strict_slashes=False)
-@jwt_required
+@jwt_required()
 def logout():
     """ Logs the current user out."""
     return jsonify({"message": "Logout successful"}), 200

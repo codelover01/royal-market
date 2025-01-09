@@ -19,6 +19,8 @@ class AuthService():
         # Check if passwords match
         password = data.get('password')
         confirm_password = data.get('confirm_password')
+        if not confirm_password:
+            raise ValueError("Confirm passowrd is missing")
         if password != confirm_password:
             raise ValueError("Passwords do not match.")
         

@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
 from models.users import login_manager, db, bcrypt
@@ -7,11 +7,12 @@ from flask_migrate import Migrate
 import os
 from flask import jsonify, make_response
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-csrf = CSRFProtect()
-from datetime import timedelta
+from flask_jwt_extended import JWTManager
+import smtplib
 
+jwt = JWTManager()
 csrf = CSRFProtect()
-mail = Mail()
+csrf = CSRFProtect()
 
 # Flask app instance
 app = Flask(__name__)
@@ -53,17 +54,19 @@ else:
 
 
 cors = CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "/*"}})
-
+jwt.init_app(app)
 bcrypt.init_app(app)
 csrf.init_app(app)
-mail.init_app(app)
+mail = Mail(app)
+#mail.init_app(app)
 migrate = Migrate(app, db)
 
 db.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
-
+ 
 # Import blueprints
+from utils.email_utils import email_bp as email_bp
 from routes.business import business_bp as business_bp
 from routes.auth import auth_bp as auth_bp
 from services.reviews import review_bp as review_bp
@@ -91,6 +94,7 @@ app.register_blueprint(wishlist_bp, url_prefix='/wishlist')
 app.register_blueprint(category_bp, url_prefix='/categories')
 app.register_blueprint(payment_bp, url_prefix='/payments')
 app.register_blueprint(inventory_bp, url_prefix='/inventory')
+app.register_blueprint(email_bp, url_prefix='/email')
 
 # @app.before_request
 # def set_csrf_cookie():
@@ -150,6 +154,32 @@ def landing_page():
 def home():
     """ Handles the homepage of the app"""
     return "This is the home page"
+
+
+# @app.route('/send-test-email')
+# def send_test_email():
+#     msg = Message('Test Email', recipients=['recipient@example.com'])
+#     msg.body = 'This is a test email from Flask!'
+#     try:
+#         mail.send(msg)
+#         return "Test email sent successfully!"
+#     except Exception as e:
+#         return f"Error sending email: {e}"
+
+@app.route('/send-test-email')
+def send_test_email():
+    try:
+        # Enable debugging
+        smtp = smtplib.SMTP('smtp.gmail.com', 587)
+        smtp.set_debuglevel(1)  # Enable debug output for SMTP connection
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')  # Replace with actual Gmail credentials
+        smtp.sendmail('royalmarketv1@gmail.com', 'kinglovenoel@gmail.com', 'This is the royal market app')  # Replace with actual from/to email addresses and message
+        smtp.quit()
+        return "Test email sent successfully!"
+    except Exception as e:
+        return f"Error sending email: {e}"
 
 
 if __name__ == "__main__":

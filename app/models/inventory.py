@@ -6,8 +6,16 @@ class Inventory(BaseModel):
     """ A model for the business inventory """
     __tablename__ = 'inventory'
     
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable = False)
-    service_id = db.Column(db.Integer, db.ForeignKey('service.id'), nullable = False)
+    product_id = db.Column(db.Integer, db.ForeignKey(
+        'products.id',
+        name='fk_invenory_product'
+        ),
+        nullable = False)
+    service_id = db.Column(db.Integer, db.ForeignKey(
+        'services.id',
+         name='fk_invenory_service'
+        ),
+        nullable = False)
     stock = db.Column(db.Integer, nullable=False)
     last_updated = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     

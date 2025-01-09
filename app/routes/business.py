@@ -8,7 +8,7 @@ business_bp = Blueprint('business', __name__, url_prefix='/business')
 
 @business_bp.route('/create_business', methods=['POST'], strict_slashes=False,
                    endpoint='create_business')
-@jwt_required
+@jwt_required()
 def create_business() -> tuple[dict[str, str], int]:
     """ Adds a new business to the database
     Args:
@@ -22,14 +22,16 @@ def create_business() -> tuple[dict[str, str], int]:
                 'error': 'Invalid JSON.'
             }), 400
 
-        new_business: Business = Business.create_business(data, current_user)
+        # new_business: Business = Business.create_business(data, current_user)
+        new_business: Business = Business.create_business(data)
         new_business.save()
         return jsonify({
                 'message': 'Business created successfully',
                 'New_business': new_business.to_dict()
                 }), 201
     except BusinessException as e:
-        return jsonify({(e.to_dict()), e.code})
+        # return jsonify({(e.to_dict()), e.code})
+        return jsonify({"error": {str(e)}})
     
     except Exception as e:
         return jsonify({

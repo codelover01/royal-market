@@ -29,12 +29,11 @@ class Business(BaseModel):
         db.ForeignKey('users.id'),
         nullable=False
     )
-    business_id = db.Column(
-        db.Integer,
-        db.ForeignKey('products.id'),
-        nullable = False
-    )
-    review_id = db.Column(db.Integer, db.ForeignKey('reviews.id'), nullable = True)
+    reviews_id = db.Column(db.Integer, db.ForeignKey(
+        'reviews.id',
+        name='fk_business_review'
+        ),
+        nullable = True)
     online_available = db.Column(
         db.Boolean,
         default=True
@@ -51,7 +50,8 @@ class Business(BaseModel):
     reviews = db.relationship('Review', back_populates='business')
 
     @staticmethod
-    def create_business(data: dict, current_user: User) -> tuple[dict, int]:
+    # def create_business(data: dict, current_user: User) -> tuple[dict, int]:
+    def create_business(data: dict) -> tuple[dict]:
         """ Creates a new business 
         Args:
             - data (): Data entered by user to create a new business
@@ -64,15 +64,42 @@ class Business(BaseModel):
             Raises IntegrityErrors, keyErrors or Exception errors on failure.
         """
         try:
-            new_business = Business(
-                name = data.get('name'),
-                email = data.get('email'),
-                owner_id = current_user.id,
-                description = data.get('description'),
-                location = data.get('location'),
-                online_available = data.get('online_available'),
-                offline_available = data.get('offline_available')
-            )
+            name = data.get('name'),
+            email = data.get('email'),
+            owner_id = data.get('owner_id'),
+            description = data.get('description'),
+            location = data.get('location'),
+
+            if [name, email, owner_id, description, location] not in data:
+                raise ValueError('Name, email, owner_id, description and location are needed')
+            
+            new_business = Business(**data)
+                # name = data.get('name'),
+                # email = data.get('email'),
+                # owner_id = current_user.id,
+                # description = data.get('description'),
+                # location = data.get('location'),
+                # online_available = data.get('online_available'),
+                # offline_available = data.get('offline_available')
+            # )
+            # new_business = Business(
+            #     name = data['name'],
+            #     email = data['email'],
+            #     owner_id = current_user.id,
+            #     description = data['description'],
+            #     location = data['location'],
+            #     online_available = data['online_available'],
+            #     offline_available = data['offline_available']
+            # )
+            # new_business = Business({
+            # 'name': Business.name,
+            # 'email': Business.email,
+            # 'owner_id': Business.owner_id,
+            # 'description': Business.description,
+            # 'locaion': Business.location,
+            # 'online_available': Business.online_available,
+            # 'offline': Business.offline_available
+            # })
             new_business.save()
             return new_business
         

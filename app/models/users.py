@@ -13,7 +13,6 @@ class User(BaseModel, UserMixin):
     """User class for managing user accounts"""
 
     __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
@@ -69,6 +68,19 @@ class User(BaseModel, UserMixin):
         elif self.email:
             return self.email  # Fallback to email if no other fields are available
         return ""
+    
+    def to_json(self):
+        """Convert User object to JSON format"""
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email_verified': self.email_verified,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
 
     @classmethod
     def username_exists(cls, username: str):
@@ -119,8 +131,11 @@ class User(BaseModel, UserMixin):
                 salt='reset-password',
                 max_age = expires_sec
             ) ['user_id']
-        except Exception:
-            return None
+        # except Exception:
+        #     return 
+        except Exception as e:
+            return f"Error: {e}"
+
         return User.get_by_id(user_id)
     
 

@@ -6,9 +6,21 @@ class Review(BaseModel):
     """ A Review class that handles the Reviews made by users"""
     __tablename__ = 'reviews'
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=True)
-    service_id = db.Column(db.Integer, db.ForeignKey('services.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id',
+        name='fk_review_user'
+        ),
+        nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey(
+        'products.id',
+        name='fk_review_product'
+        ),
+        nullable=True)
+    service_id = db.Column(db.Integer, db.ForeignKey(
+        'services.id',
+        name='fk_review_service'
+        ),
+        nullable=True)
     rating = db.Column(db.Integer, nullable=False)  # e.g., 1-5
     comment = db.Column(db.Text, nullable=True)
     review_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))

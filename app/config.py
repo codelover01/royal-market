@@ -6,16 +6,15 @@ from datetime import timedelta
 load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# print(os.getenv('DATABASE_URL'))
-
+# Application Configurations
 class Config:
     SQLALCHEMY_ECHO = True
     SECRET_KEY = os.getenv("SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", 'mysql+mysqlconnector://root:kinglovenoel%401@localhost/royal_market_01')
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS")
     JWT_ACCESS_CSRF_HEADER_NAME = ['X-CSRFToken']
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'default_jwt_secret')
-    JWT_ACCESS_TOKEN_EXPIRES = 900  # 15 minutes
+    JWT_ACCESS_TOKEN_EXPIRES = 3600  # 30 minutes
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = "Bearer"
@@ -38,10 +37,9 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'default_secret_key')
 
 class TestConfig(Config):
     TESTING = os.getenv("TESTING")
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:kinglovenoel%401@localhost/test_db'
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI_TEST")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

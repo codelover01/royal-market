@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 class BaseModel(db.Model):
     """Base class for all models, inherits from SQLAlchemy's Model class"""
     __abstract__ = True  # To avoid creating a table for BaseModel itself
-    id = db.Column(db.Integer, primary_key=True, unique=True, nullable = False)
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable = False,  autoincrement=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
@@ -39,8 +39,10 @@ class BaseModel(db.Model):
 
     def update(self, **kwargs):
         """ Updates objects from the database """
+        filters = []
         for key, value in kwargs.items():
             if hasattr(self, key):
+                filters.append(getattr(self, key) == value)
                 setattr(self, key, value)
             else:
                 raise AttributeError(f"'{self.__class__.__name__}' has no attribute {key}")
@@ -73,14 +75,23 @@ class BaseModel(db.Model):
         return cls.query.filter(*filters).all()
     
     @classmethod
-    def find_first_object(cls, attributes: dict):
+    def find_first_object(cls, attributes: dict = None, **kwargs):
         """ Search for the first object that match the given attributes """
         filters = []
-        for key, value in attributes.items():
-            if hasattr(cls, key):  # Ensure the attribute exists in the model
-                filters.append(getattr(cls, key) == value)
-            else:
-                raise AttributeError(f"'{cls.__name__}' has no attribute '{key}'")
+
+        # If attributes are passed as a dictionary
+        if attributes and isinstance(attributes, dict):
+            for key, value in attributes.items():
+                if hasattr(cls, key):  # Ensure the attribute exists in the model
+                    filters.append(getattr(cls, key) == value)
+                else:
+                    raise AttributeError(f"'{cls.__name__}' has no attribute '{key}'")
+        else:
+            for key, value in kwargs.items():
+                if hasattr(cls, key):  # Ensure the attribute exists in the model
+                    filters.append(getattr(cls, key) == value)
+                else:
+                    raise AttributeError(f"'{cls.__name__}' has no attribute '{key}'")
         return cls.query.filter(*filters).first()
     
 

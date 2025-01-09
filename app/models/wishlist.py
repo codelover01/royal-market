@@ -4,11 +4,33 @@ from .baseModel import BaseModel
 class Wishlist(BaseModel):
     __tablename__ = 'wishlist'
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id',
+        name='fk_wishlist_user'
+        ),
+        nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey(
+        'products.id',
+        name='fk_wishlist_product'
+        ),
+        nullable=False)
     
-    product = db.relationship('Product', back_populates='wishlist')
-    service = db.relationship('Service', back_populates='wishlist')
+    service_id = db.Column(db.Integer, db.ForeignKey(
+        'services.id',
+        name='fk_wishlist_service'
+        ),
+        nullable=False)
+    
+    product = db.relationship(
+        'Product',
+        back_populates='wishlist',
+        foreign_keys='Wishlist.product_id'
+        )
+    service = db.relationship(
+        'Service',
+        back_populates='wishlist',
+        foreign_keys='Wishlist.service_id'
+        )
     user = db.relationship('User', back_populates='wishlist')
 
     def __repr__(self):
