@@ -41,8 +41,8 @@ def create_business() -> tuple[dict[str, str], int]:
                 'New_business': new_business.to_json()
                 }), 201
     except BusinessException as e:
-        return jsonify({e.to_dict()}), e.code
-        # return jsonify( str(e))
+        # return jsonify(str(e)), e.code
+        return jsonify( str(e)), e.code
     except Exception as e:
         return jsonify({
             'error': 'An unexpected error occurred.', 'details': str(e)
@@ -67,8 +67,9 @@ def update_business(business_id: int) -> tuple[dict[str, str], int]:
             return jsonify({'message': "Invalid Business ID"}), 400
 
         # Ensure ownership
-        current_user = get_jwt_identity()
-        if business.owner_id != current_user.id:
+        identity = get_jwt_identity()
+        current_user = User.find_first_object(id=identity)
+        if business.owner_id != current_user:
             return jsonify({'error': 'Unauthorized: You do not own this business.'}), 403
 
         # Update fields
