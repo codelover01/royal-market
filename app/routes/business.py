@@ -41,7 +41,6 @@ def create_business() -> tuple[dict[str, str], int]:
                 'New_business': new_business.to_json()
                 }), 201
     except BusinessException as e:
-        # return jsonify(str(e)), e.code
         return jsonify( str(e)), e.code
     except Exception as e:
         return jsonify({
