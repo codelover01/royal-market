@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-# from flask_login import current_user
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.business import Business, BusinessException
+from models.users import User
 
 
 business_bp = Blueprint('business', __name__, url_prefix='/business')
@@ -21,7 +21,14 @@ def create_business() -> tuple[dict[str, str], int]:
             return jsonify({
                 'error': 'Invalid JSON.'
             }), 400
-        current_user = get_jwt_identity()
+
+        identity = get_jwt_identity() # Gets the identity from the JWT
+        current_user = User.find_first_object(username=identity)
+        if not current_user:
+            return jsonify({
+                "error": "User not found."
+            }), 404
+
         required_keys = ['name', 'email', 'owner_id', 'description', 'location']
         if not all(key in data for key in required_keys):
             return jsonify({'error': 'Missing required fields'}), 400
