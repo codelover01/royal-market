@@ -99,7 +99,7 @@ def update_business(business_id: int) -> tuple[dict[str, str], int]:
 
 @business_bp.route('/delete_business/<int:business_id>', methods = ['DELETE'], strict_slashes = False,
                    endpoint='delete_business')
-@jwt_required
+@jwt_required()
 def delete_business(business_id: int) -> tuple[dict[str, str], int]:
     """
     Deletes or remove a business from the database by it's ID
@@ -130,7 +130,7 @@ def delete_business(business_id: int) -> tuple[dict[str, str], int]:
 
 @business_bp.route('/get_businessses', methods = ['GET'], strict_slashes = False,
                    endpoint='get_business')
-@jwt_required
+@jwt_required()
 def get_business():
     """
     Gets all the businesses in the database according to the User_id
