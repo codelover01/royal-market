@@ -50,7 +50,7 @@ def create_business() -> tuple[dict[str, str], int]:
     
 @business_bp.route('/update_business/<int:business_id>', methods = ['PUT'],
                    endpoint='update_business')
-@jwt_required
+@jwt_required()
 def update_business(business_id: int) -> tuple[dict[str, str], int]:
     """
     Handles the update of business credentials.
@@ -62,7 +62,7 @@ def update_business(business_id: int) -> tuple[dict[str, str], int]:
                 'message': 'Invalid JSON'
             }), 400
 
-        business: Business = Business.get_or_404(business_id)
+        business: Business = Business.get_by_id(business_id)
         if not business:
             return jsonify({'message': "Invalid Business ID"}), 400
 
