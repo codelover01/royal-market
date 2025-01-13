@@ -49,6 +49,20 @@ class Business(BaseModel):
     services= db.relationship('Service', back_populates='business')
     reviews = db.relationship('Review', back_populates='business')
 
+    def to_json(self):
+        """Convert User object to JSON format"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'location': self.location,
+            'description': self.description,
+            'online_available': self.online_available,
+            'online_available': self.offline_available,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+
     @staticmethod
     # def create_business(data: dict, current_user: User) -> tuple[dict, int]:
     def create_business(data: dict, current_user) -> 'Business':

@@ -83,10 +83,10 @@ def login():
         
         user = AuthService.authenticate_user(email, password)
         if user:
-            access_token = create_access_token(identity=user.username)
+            access_token = create_access_token(identity=user.id)
             
             # Create the refresh token
-            refresh_token = create_refresh_token(identity=user.username)
+            refresh_token = create_refresh_token(identity=user.id)
 
             # Create response object
             response = make_response(jsonify({

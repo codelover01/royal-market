@@ -23,7 +23,7 @@ def create_business() -> tuple[dict[str, str], int]:
             }), 400
 
         identity = get_jwt_identity() # Gets the identity from the JWT
-        current_user = User.find_first_object(username=identity)
+        current_user = User.find_first_object(id=identity)
         if not current_user:
             return jsonify({
                 "error": "User not found."
