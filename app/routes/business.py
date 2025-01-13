@@ -38,7 +38,7 @@ def create_business() -> tuple[dict[str, str], int]:
         new_business.save()
         return jsonify({
                 'message': 'Business created successfully',
-                'New_business': new_business.to_dict()
+                'New_business': new_business.to_json()
                 }), 201
     except BusinessException as e:
         return jsonify({e.to_dict()}), e.code
