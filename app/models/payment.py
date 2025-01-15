@@ -2,6 +2,7 @@ from . import db
 from datetime import datetime, timezone
 from .baseModel import BaseModel
 
+
 class Payment(BaseModel):
     """ Class representaion of payments for orders, products, services etc"""
     __tablename__ = 'payments'
@@ -25,6 +26,7 @@ class Payment(BaseModel):
     payment_amount = db.Column(db.Float, nullable=False)
     payment_status = db.Column(db.String(50), nullable=False, default='unpaid')
     
+    # Model Relationshhips
     orders = db.relationship(
         'Order',
         back_populates='payment',
