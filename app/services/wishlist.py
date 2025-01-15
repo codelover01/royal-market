@@ -1,4 +1,3 @@
-# services/wishlist_service.py
 from models.wishlist import Wishlist
 from models import db
 
