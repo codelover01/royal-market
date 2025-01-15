@@ -12,8 +12,14 @@ business_bp = Blueprint('business', __name__, url_prefix='/business')
 def create_business() -> tuple[dict[str, str], int]:
     """ Adds a new business to the database
     Args:
-        data
+        data: required fields for business creation
+        identity: current user's identificaion
     Returns:
+        - JOSN response with successful creation; 201
+        - Invalid JSON: 400
+        - User not found: 404
+        - Missing required fields: 400
+        - Unexpected error: 500
     """
     try:
         data = request.get_json()
