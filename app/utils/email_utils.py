@@ -15,7 +15,7 @@ def send_test_email():
         smtp.set_debuglevel(1)  # Enable debug output for SMTP connection
         smtp.ehlo()  # Send EHLO to the server to initiate the communication
         smtp.starttls()  # Secure the connection using TLS
-        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')  # Login with the email and password (replace with your credentials)
+        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')
         
         # Create the email message
         from_email = 'royalmarketv1@gmail.com'  # Sender's email address
