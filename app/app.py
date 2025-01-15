@@ -12,27 +12,13 @@ import smtplib
 
 jwt = JWTManager()
 csrf = CSRFProtect()
-csrf = CSRFProtect()
 
 # Flask app instance
 app = Flask(__name__)
 
-# # Import Configurations
-# from config import Config, TestConfig
-
-# # Check if testing
-# if os.getenv('FLASK_ENV') == 'testing' or os.getenv('TESTING') == 'True':
-#     app.config.from_object(TestConfig)
-# else:
-#     app.config.from_object(Config)
 
 # Load configuration
 from config import Config, TestConfig
-
-# # if os.getenv('FLASK_ENV') == 'testing' or os.getenv('TESTING') == 'True':
-# #     app.config.from_object(TestConfig)
-# # else:
-# app.config.from_object(Config)
 
 # Load Configuration
 FLASK_ENV = os.getenv('FLASK_ENV', 'development').lower()
@@ -96,26 +82,6 @@ app.register_blueprint(payment_bp, url_prefix='/payments')
 app.register_blueprint(inventory_bp, url_prefix='/inventory')
 app.register_blueprint(email_bp, url_prefix='/email')
 
-# @app.before_request
-# def set_csrf_cookie():
-#     csrf_token = generate_csrf()
-#     response = make_response(jsonify({'message': 'CSRF token set'}))
-#     response.set_cookie('csrf_token', csrf_token, httponly=False)
-#     response.set_cookie('csrf_token', csrf_token)
-
-# @app.before_request
-# def set_csrf_cookie():
-#     if not request.cookies.get('csrf_token'):
-#         csrf_token = generate_csrf()
-#         response = make_response()
-#         response.set_cookie(
-#             'csrf_token',
-#             csrf_token,
-#             httponly=False,
-#             samesite='Lax',
-#             secure=False  # Change to True if using HTTPS
-#         )
-#         return response
 
 @app.before_request
 def csrf_protect():
@@ -156,16 +122,6 @@ def home():
     return "This is the home page"
 
 
-# @app.route('/send-test-email')
-# def send_test_email():
-#     msg = Message('Test Email', recipients=['recipient@example.com'])
-#     msg.body = 'This is a test email from Flask!'
-#     try:
-#         mail.send(msg)
-#         return "Test email sent successfully!"
-#     except Exception as e:
-#         return f"Error sending email: {e}"
-
 @app.route('/send-test-email')
 def send_test_email():
     try:
@@ -174,8 +130,8 @@ def send_test_email():
         smtp.set_debuglevel(1)  # Enable debug output for SMTP connection
         smtp.ehlo()
         smtp.starttls()
-        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')  # Replace with actual Gmail credentials
-        smtp.sendmail('royalmarketv1@gmail.com', 'kinglovenoel@gmail.com', 'This is the royal market app')  # Replace with actual from/to email addresses and message
+        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')
+        smtp.sendmail('royalmarketv1@gmail.com', 'kinglovenoel@gmail.com', 'This is the royal market app')
         smtp.quit()
         return "Test email sent successfully!"
     except Exception as e:
