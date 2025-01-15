@@ -111,7 +111,9 @@ def delete_business(business_id: int) -> tuple[dict[str, str], int]:
     Deletes or remove a business from the database by it's ID
     """
     try:
-        current_user = get_jwt_identity()
+        identity = get_jwt_identity()
+        current_user = User.find_first_object(id=identity)
+        
         # Ensure the business belons to the current user
         business: Business = Business.find_first_object(
             id = business_id, owner_id = current_user.id
@@ -141,9 +143,10 @@ def get_business():
     """
     Gets all the businesses in the database according to the User_id
     """
-    current_user = get_jwt_identity()
+    identity = get_jwt_identity()
+    current_user = User.find_first_object(id=identity)
     # Retrieve all the businesses that belong to the current user
-    businesses = Business.find_by_attributes(owner_id = current_user.id)
+    businesses = Business.find_by_attributes(owner_id = current_user)
     if not businesses:
         return jsonify({
             'message': 'No businesses found for your account'
