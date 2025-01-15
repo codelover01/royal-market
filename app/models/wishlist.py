@@ -2,6 +2,7 @@ from . import db
 from .baseModel import BaseModel
 
 class Wishlist(BaseModel):
+    """ Class representation for users' wishlist """
     __tablename__ = 'wishlist'
     
     user_id = db.Column(db.Integer, db.ForeignKey(
