@@ -97,6 +97,7 @@ def update_category(category_id):
 @category_bp.route('/<int:category_id>', methods=['DELETE'])
 @jwt_required()
 def delete_category(category_id):
+    """ Deletes a category from the database"""
     result = CategoryService.delete_category(category_id)
     return jsonify(result), 200
 
