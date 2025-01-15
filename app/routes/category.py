@@ -104,5 +104,22 @@ def delete_category(category_id):
 # List Category Products
 @category_bp.route('/<int:category_id>/products', methods=['GET'])
 def list_category_products(category_id):
+    """ Returns products under a specific category. """
     products = CategoryService.list_category_products(category_id)
     return jsonify([{"id": p.id, "name": p.name} for p in products]), 200
+
+
+# List Category Products
+@category_bp.route('/<int:category_id>/services', methods=['GET'])
+def list_category_services(category_id):
+    """ Returns services under a specific category"""
+    services = CategoryService.list_category_services(category_id)
+    return jsonify([{"id": s.id, "name": s.name} for s in services]), 200
+
+
+# List Category Products
+@category_bp.route('/<int:category_id>/businesses', methods=['GET'])
+def list_category_bsinesses(category_id):
+    """ Returns businesses under a specific category"""
+    businesses = CategoryService.list_category_businesses(category_id)
+    return jsonify([{"id": b.id, "name": b.name} for b in businesses]), 200
