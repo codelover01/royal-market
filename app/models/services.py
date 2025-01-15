@@ -2,7 +2,7 @@ from . import db
 from .baseModel import BaseModel
 
 class Service(BaseModel):
-    """ A service model that inherites from BaseModel"""
+    """ A class service model for services"""
     __tablename__ = 'services'
     name = db.Column(
         db.String(100),
