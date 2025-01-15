@@ -21,9 +21,9 @@ class Payment(BaseModel):
         name='fk_payment_product'
         ), nullable=True)
     payment_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    payment_method = db.Column(db.String(50), nullable=False)  # e.g., credit card, PayPal
+    payment_method = db.Column(db.String(50), nullable=False)
     payment_amount = db.Column(db.Float, nullable=False)
-    payment_status = db.Column(db.String(50), nullable=False, default='unpaid')  # e.g., paid, refunded
+    payment_status = db.Column(db.String(50), nullable=False, default='unpaid')
     
     orders = db.relationship(
         'Order',
