@@ -2,6 +2,7 @@ from . import db
 from models.baseModel import BaseModel
 
 class Category(BaseModel):
+    """ Class representaion for Category model"""
     __tablename__ = 'categories'
     
     name = db.Column(db.String(50), nullable=False)
