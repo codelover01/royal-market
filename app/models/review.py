@@ -25,6 +25,7 @@ class Review(BaseModel):
     comment = db.Column(db.Text, nullable=True)
     review_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     
+    # Model Relationships
     user = db.relationship('User', back_populates='reviews')
     product = db.relationship('Product', back_populates='reviews')
     service = db.relationship('Service', back_populates='reviews')
@@ -32,6 +33,7 @@ class Review(BaseModel):
 
 
     def __repr__(self):
+        """ Returns a sring representation of a review object """
         return f"<Review {self.id} - Product: {self.product_id}, Rating: {self.rating}>"
     
     @classmethod
