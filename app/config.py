@@ -14,7 +14,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS")
     JWT_ACCESS_CSRF_HEADER_NAME = ['X-CSRFToken']
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'default_jwt_secret')
-    JWT_ACCESS_TOKEN_EXPIRES = 3600  # 30 minutes
+    JWT_ACCESS_TOKEN_EXPIRES = 3600  # 1 hour
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = "Bearer"
