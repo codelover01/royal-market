@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from .baseModel import BaseModel
 
 class Payment(BaseModel):
-    """ Handles payments for orders, products, services etc"""
+    """ Class representaion of payments for orders, products, services etc"""
     __tablename__ = 'payments'
     
     order_id = db.Column(db.Integer, db.ForeignKey(
