@@ -1,3 +1,6 @@
+"""
+A module that deals with payment services
+"""
 from models.payment import Payment
 from models.orders import Order
 from models import db
@@ -35,7 +38,9 @@ class PaymentService:
             db.session.add(payment)
             db.session.commit()
 
-            return {"message": "Payment successful", "payment_id": payment.id}, 201
+            return {
+                "message": "Payment successful", "payment_id": payment.id
+                }, 201
 
         except SQLAlchemyError as e:
             db.session.rollback()
