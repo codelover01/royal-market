@@ -1,39 +1,9 @@
 
 from models.users import User
-
 import smtplib
-from flask import Blueprint, current_app as app, url_for
+from flask import url_for
 
 
-email_bp = Blueprint('email_bp', __name__, url_prefix='/email')
-
-@email_bp.route('/send-test-email', methods=['GET', 'POST'])
-def send_test_email():
-    try:
-        # Set up the SMTP server connection
-        smtp = smtplib.SMTP('smtp.gmail.com', 587)
-        smtp.set_debuglevel(1)  # Enable debug output for SMTP connection
-        smtp.ehlo()  # Send EHLO to the server to initiate the communication
-        smtp.starttls()  # Secure the connection using TLS
-        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')
-        
-        # Create the email message
-        from_email = 'royalmarketv1@gmail.com'  # Sender's email address
-        to_email = 'kinglovenoel@gmail.com'  # Recipient's email address
-        subject = "Test Email from Royal Market"
-        body = "This is a test email sent from the Royal Market app."
-        
-        # Construct the email message
-        message = f"Subject: {subject}\n\n{body}"
-        
-        # Send the email
-        smtp.sendmail(from_email, to_email, message)
-        smtp.quit()  # Close the SMTP connection
-        
-        return "Test email sent successfully!"
-    
-    except Exception as e:
-        return f"Error sending email: {e}"
 
 def send_password_reset_email(user: User):
     """
