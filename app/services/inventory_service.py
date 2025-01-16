@@ -1,3 +1,6 @@
+"""
+A module that deals with inventory service code
+"""
 from models.inventory import Inventory
 from models import db
 from sqlalchemy.exc import SQLAlchemyError
