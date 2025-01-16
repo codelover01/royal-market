@@ -4,7 +4,9 @@ A module that deals with payments in the business
 from flask import Blueprint, request, jsonify
 from services.payment_service import PaymentService
 
-payment_bp = Blueprint('payment', __name__, url_prefix='/payments')
+payment_bp = Blueprint(
+    'payment', __name__, url_prefix='/payments'
+    )
 
 
 # Create a Payment
@@ -35,7 +37,10 @@ def create_payment():
     payment_amount = data.get('payment_amount')
 
     if not all([order_id, payment_method, payment_amount]):
-        return jsonify({"error": "Missing required fields"}), 400
+        return jsonify(
+            {
+                "error": "Missing required fields"
+             }), 400
 
     result = PaymentService.create_payment(
         order_id, payment_method, payment_amount
@@ -81,7 +86,10 @@ def get_all_payments():
     try:
         payments = PaymentService.get_all_payments()
         if not payments:
-            return jsonify({"error": "Not payments were found"}), 404
+            return jsonify(
+                {
+                    "error": "Not payments were found"
+                 }), 404
         result = [{
             "id": payment.id,
             "order_id": payment.order_id,
