@@ -1,3 +1,6 @@
+""""
+A module for Business model
+"""
 from . import db
 from .baseModel import BaseModel
 from sqlalchemy.exc import IntegrityError

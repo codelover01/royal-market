@@ -1,3 +1,6 @@
+"""
+A module for category model
+"""
 from . import db
 from models.baseModel import BaseModel
 
@@ -24,7 +27,9 @@ class Category(BaseModel):
     @classmethod
     def description_exists(cls, description: str):
         """Check if an email already exists in the database"""
-        return cls.query.filter_by(description=description).first() is not None
+        return cls.query.filter_by(
+            description=description
+            ).first() is not None
 
     def save(self):
         """Save current object to the database with validation"""

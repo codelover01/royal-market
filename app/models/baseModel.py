@@ -1,3 +1,6 @@
+"""
+A module for the base model
+"""
 from flask import Flask
 from . import db
 from datetime import datetime, timezone
@@ -53,7 +56,9 @@ class BaseModel(db.Model):
                 filters.append(getattr(self, key) == value)
                 setattr(self, key, value)
             else:
-                raise AttributeError(f"'{self.__class__.__name__}' has no attribute {key}")
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' has no attribute {key}"
+                    )
         db.session.commit()
 
     @classmethod
