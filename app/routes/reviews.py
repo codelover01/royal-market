@@ -1,4 +1,7 @@
-# routes/review_routes.py
+"""
+A module that deals with business, products and
+service reviews
+"""
 from flask import Blueprint, jsonify, request, abort
 from flask_login import current_user
 from flask_jwt_extended import jwt_required
