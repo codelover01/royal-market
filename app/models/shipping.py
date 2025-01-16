@@ -1,3 +1,6 @@
+"""
+A module for shipping model
+"""
 from . import db
 from .baseModel import BaseModel
 import enum
@@ -18,11 +21,19 @@ class Shipping(BaseModel):
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     shipping_address = db.Column(db.String(255), nullable=False)
-    shipping_method = db.Column(db.String(50), nullable=False)  # e.g., Standard, Express
+    shipping_method = db.Column(db.String(50), nullable=False)
 
     # Using Enums for status
-    status = db.Column(db.Enum(ShippingStatus), nullable=False, default=ShippingStatus.PENDING)
-    shipping_status = db.Column(db.String(50), nullable=False, default='pending')
+    status = db.Column(
+        db.Enum(ShippingStatus),
+        nullable=False,
+        default=ShippingStatus.PENDING
+        )
+    shipping_status = db.Column(
+        db.String(50),
+        nullable=False,
+        default='pending'
+        )
     shipped_date = db.Column(db.DateTime, nullable=True)
     delivery_date = db.Column(db.DateTime, nullable=True)
     
