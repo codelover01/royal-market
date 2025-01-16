@@ -1,3 +1,7 @@
+"""
+A module that deals with categorizing business, products
+and services
+"""
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from services.categoryService import CategoryService
@@ -43,7 +47,9 @@ def get_categories():
         - Jsonifies the response with 200 status code
     """
     categories = CategoryService.get_all_categories()
-    return jsonify([{"id": cat.id, "name": cat.name} for cat in categories]), 200
+    return jsonify(
+        [{"id": cat.id, "name": cat.name} for cat in categories]
+        ), 200
 
 # Get Category by ID
 @category_bp.route('/<int:category_id>', methods=['GET'])
@@ -58,7 +64,12 @@ def get_category(category_id):
     """
     try:
         category:CategoryService = CategoryService.get_category_by_id(category_id)
-        return jsonify({"id": category.id, "name": category.name, "description": category.description}), 200
+        return jsonify(
+            {
+                "id": category.id,
+                "name": category.name,
+                "description": category.description
+                }), 200
     except Exception as e:
         return jsonify({'error': {str(e)}})
 # Update Category
