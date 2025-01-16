@@ -1,3 +1,6 @@
+"""
+A module that deals with business API endpoints
+"""
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.business import Business, BusinessException
