@@ -1,3 +1,6 @@
+"""
+A module for user model
+"""
 from . import db, bcrypt
 from flask_login import UserMixin
 from .baseModel import BaseModel
@@ -26,7 +29,14 @@ class User(BaseModel, UserMixin):
     orders = db.relationship('Order', back_populates='user')
     wishlist = db.relationship('Wishlist', back_populates='user')
 
-    def __init__(self, username, email, password, first_name=None, last_name=None):
+    def __init__(
+            self,
+            username,
+            email,
+            password,
+            first_name=None,
+            last_name=None
+            ):
         """Initialize a User instance"""
         self.username = username
         self.email = email
@@ -57,16 +67,25 @@ class User(BaseModel, UserMixin):
     
     def display_name(self) -> str:
         """ Display User name based on email/first_name/last_name/username """
+        # Return username if available
         if self.username:
-            return self.username  # Return username if available
+            return self.username
+        
+        # First name and last name if no username
         elif self.first_name and self.last_name:
-            return "{} {}".format(self.first_name, self.last_name)  # First name and last name if no username
+            return "{} {}".format(self.first_name, self.last_name)
+        
+        # If only first name available
         elif self.first_name:
-            return self.first_name  # If only first name available
+            return self.first_name
+        
+        # If only last name available
         elif self.last_name:
-            return self.last_name  # If only last name available
+            return self.last_name
+        
+        # Fallback to email if no other fields are available
         elif self.email:
-            return self.email  # Fallback to email if no other fields are available
+            return self.email
         return ""
     
     def to_json(self):
