@@ -24,7 +24,8 @@ class AuthService():
         if password != confirm_password:
             raise ValueError("Passwords do not match.")
         
-        # Remove 'confirm_password' from the data to avoid passing it to the User model
+        # Remove 'confirm_password' from the data to 
+        # avoid passing it to the User model
         data.pop('confirm_password', None)
 
         user = User(**data)
