@@ -1,3 +1,6 @@
+"""
+A module that deals with user wishlist service
+"""
 from models.wishlist import Wishlist
 from models import db
 
@@ -6,7 +9,9 @@ class WishlistService:
     def add_to_wishlist(user_id, product_id=None, service_id=None):
         """Add a product or service to the user's wishlist."""
         if product_id:
-            existing_item = Wishlist.query.filter_by(user_id=user_id, product_id=product_id).first()
+            existing_item = Wishlist.query.filter_by(
+                user_id=user_id, product_id=product_id
+                ).first()
             if existing_item:
                 return existing_item  # Item already exists in the wishlist
             item = Wishlist(user_id=user_id, product_id=product_id)
@@ -15,7 +20,9 @@ class WishlistService:
             return item
 
         elif service_id:
-            existing_item = Wishlist.query.filter_by(user_id=user_id, service_id=service_id).first()
+            existing_item = Wishlist.query.filter_by(
+                user_id=user_id, service_id=service_id
+                ).first()
             if existing_item:
                 return existing_item  # Item already exists in the wishlist
             item = Wishlist(user_id=user_id, service_id=service_id)
@@ -28,13 +35,17 @@ class WishlistService:
     def remove_from_wishlist(user_id, product_id=None, service_id=None):
         """Remove a product or service from the user's wishlist."""
         if product_id:
-            item = Wishlist.query.filter_by(user_id=user_id, product_id=product_id).first()
+            item = Wishlist.query.filter_by(
+                user_id=user_id, product_id=product_id
+                ).first()
             if item:
                 db.session.delete(item)
                 db.session.commit()
             return item
         elif service_id:
-            item = Wishlist.query.filter_by(user_id=user_id, service_id=service_id).first()
+            item = Wishlist.query.filter_by(
+                user_id=user_id, service_id=service_id
+                ).first()
             if item:
                 db.session.delete(item)
                 db.session.commit()
