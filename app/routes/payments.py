@@ -1,3 +1,6 @@
+"""
+A module that deals with payments in the business
+"""
 from flask import Blueprint, request, jsonify
 from services.payment_service import PaymentService
 
