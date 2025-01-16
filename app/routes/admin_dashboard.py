@@ -1,56 +1,66 @@
+"""
+A module that deals with admin operations.
+"""
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 from models.users import User
 from models.products import Product
 from models.orders import Order
+from models.services import Service
 from flask_jwt_extended import jwt_required
 
 
-admin_dashboard_bp = Blueprint('admin_dashboard', __name__, url_prefix='/admin')
+admin_dashboard_bp = Blueprint(
+    'admin_dashboard', __name__, url_prefix='/admin')
 
-@admin_dashboard_bp.route('/dashboard', methods=['GET'], endpoint='dashboard' )
-@jwt_required
+@admin_dashboard_bp.route(
+        '/dashboard', methods=['GET'], endpoint='dashboard' )
+@jwt_required()
 def admin_dashboard():
     """Retrieve admin dashboard overview"""
-    return jsonify({
-        "message": "Admin Dashboard",
-        "total_users": User.query.count(),
-        "total_products": Product.query.count(),
-        "pending_orders": Order.query.filter_by(status='pending').count()
-    })
+    pass
 
-@admin_dashboard_bp.route('/dashboard/products', methods=['GET', 'POST'], endpoint='admin_products')
+
+@admin_dashboard_bp.route(
+        '/dashboard/products', methods=['GET', 'POST'],
+        endpoint='admin_products')
 @jwt_required
 def admin_products():
     """View or add products"""
-    if request.method == 'GET':
-        products: Product = Product.find_by_attributes()
-        return jsonify({"products": [p.to_dict() for p in products]})
-    elif request.method == 'POST':
-        data = request.get_json()
-        new_product = Product(**data)
-        new_product.save()
-        return jsonify({"message": "Product added successfully"})
+    pass
 
-@admin_dashboard_bp.route('/dashboard/orders', methods=['GET'], endpoint='admin_orders')
+
+@admin_dashboard_bp.route(
+        '/dashboard/services', methods=['GET', 'POST'],
+        endpoint='admin_services')
+@jwt_required
+def admin_services():
+    """View or add services"""
+    pass
+
+
+@admin_dashboard_bp.route(
+        '/dashboard/orders', methods=['GET'],
+        endpoint='admin_orders')
 @jwt_required
 def admin_orders():
     """View and manage orders"""
-    orders = Order.query.all()
-    return jsonify({"orders": [o.to_dict() for o in orders]})
+    pass
 
-@admin_dashboard_bp.route('/dashboard/users', methods=['GET'], endpoint='admin_users')
+
+@admin_dashboard_bp.route(
+        '/dashboard/users', methods=['GET'],
+        endpoint='admin_users')
 @jwt_required
 def admin_users():
     """View all users"""
-    users = User.query.all()
-    return jsonify({"users": [u.to_dict() for u in users]})
+    pass
 
-@admin_dashboard_bp.route('/dashboard/analytics', methods=['GET'], endpoint='admin_analytics')
+
+@admin_dashboard_bp.route(
+        '/dashboard/analytics', methods=['GET'],
+        endpoint='admin_analytics')
 @jwt_required
 def admin_analytics():
     """View analytics"""
-    return jsonify({
-        "sales_data": [],
-        "user_growth": [],
-    })
+    pass
