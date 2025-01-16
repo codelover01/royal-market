@@ -103,13 +103,17 @@ class Business(BaseModel):
             if 'Duplicate entry' in error_message:
                 if 'for key \'business.name\'' in error_message:
                     raise BusinessException(
-                        message = 'Business name already exists. Please choose a different name',
+                        message = """Business name already exists.
+                        Please choose a different name""",
+
                         code = 400,
                         field = 'name'
                     )
                 if 'for key \'business.email\'' in error_message:
                     raise BusinessException(
-                        message = 'Business email already exists. Please choose a different email.',
+                        message = """Business email already exists.
+                        Please choose a different email.""",
+
                         code = 400,
                         field = 'email'
                     )
@@ -135,7 +139,12 @@ class Business(BaseModel):
 
 class BusinessException(Exception):
     """ Custom exception for business-specific errors. """
-    def __init__(self, message:str, code: int = 400, field: str = None, details: dict = None):
+    def __init__(
+            self, message:str,
+            code: int = 400,
+            field: str = None,
+            details: dict = None
+            ):
         """
         Initialize a BusinessException.
 
