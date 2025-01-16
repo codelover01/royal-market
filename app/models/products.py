@@ -1,3 +1,6 @@
+"""
+A module for a product model
+"""
 from . import db
 from .baseModel import BaseModel
 
