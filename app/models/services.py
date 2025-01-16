@@ -1,3 +1,6 @@
+"""
+A module for service model
+"""
 from . import db
 from .baseModel import BaseModel
 
