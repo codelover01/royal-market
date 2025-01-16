@@ -9,8 +9,10 @@ from models.users import User
 
 business_bp = Blueprint('business', __name__, url_prefix='/business')
 
-@business_bp.route('/create_business', methods=['POST'], strict_slashes=False,
-                   endpoint='create_business')
+@business_bp.route(
+        '/create_business', methods=['POST'],
+        strict_slashes=False,
+        endpoint='create_business')
 @jwt_required()
 def create_business() -> tuple[dict[str, str], int]:
     """ Adds a new business to the database
@@ -42,7 +44,6 @@ def create_business() -> tuple[dict[str, str], int]:
         if not all(key in data for key in required_keys):
             return jsonify({'error': 'Missing required fields'}), 400
 
-        # new_business: Business = Business.create_business(data, current_user)
         new_business: Business = Business.create_business(data, current_user)
         new_business.save()
         return jsonify({
@@ -85,8 +86,12 @@ def update_business(business_id: int) -> tuple[dict[str, str], int]:
         business.email = data.get('email', business.email)
         business.description = data.get('description', business.description)
         business.location = data.get('location', business.location)
-        business.online_available = data.get('online_available', business.online_available)
-        business.offline_available = data.get('offline_available', business.offline_available)
+        business.online_available = data.get(
+            'online_available', business.online_available
+            )
+        business.offline_available = data.get(
+            'offline_available', business.offline_available
+            )
         business.save()
 
         return jsonify({
@@ -148,6 +153,7 @@ def get_business():
     """
     identity = get_jwt_identity()
     current_user = User.find_first_object(id=identity)
+    
     # Retrieve all the businesses that belong to the current user
     businesses = Business.find_by_attributes(owner_id = current_user)
     if not businesses:
