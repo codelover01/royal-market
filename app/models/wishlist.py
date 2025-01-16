@@ -35,6 +35,7 @@ class Wishlist(BaseModel):
     user = db.relationship('User', back_populates='wishlist')
 
     def __repr__(self):
+        """ Returns a string representation for wishlist object."""
         return f"<Wishlist {self.id} - User: {self.user_id}, Product: {self.product_id}>"
     
     @classmethod
@@ -57,7 +58,10 @@ class Wishlist(BaseModel):
         """Add a product or service to the user's wishlist."""
         if product_id:
             # Add product to wishlist
-            existing_item = cls.query.filter_by(user_id=user_id, product_id=product_id).first()
+            existing_item = cls.query.filter_by(
+                user_id=user_id,
+                product_id=product_id
+                ).first()
             if existing_item:
                 return existing_item  # Item already exists in the wishlist
             item = cls(user_id=user_id, product_id=product_id)
@@ -66,7 +70,10 @@ class Wishlist(BaseModel):
             return item
         elif service_id:
             # Add service to wishlist
-            existing_item = cls.query.filter_by(user_id=user_id, service_id=service_id).first()
+            existing_item = cls.query.filter_by(
+                user_id=user_id,
+                service_id=service_id
+                ).first()
             if existing_item:
                 return existing_item  # Item already exists in the wishlist
             item = cls(user_id=user_id, service_id=service_id)
