@@ -1,40 +1,36 @@
+"""
+A module that deals with user dashboard
+operations.
+"""
 from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 user_dashboard_bp = Blueprint('user_dashboard', __name__, url_prefix='/user')
 
+
 @user_dashboard_bp.route('/dashboard', methods=['GET'])
-@login_required
+@jwt_required()
 def user_dashboard():
     """Retrieve user dashboard overview"""
-    return jsonify({
-        "message": "User Dashboard",
-        "user": current_user.to_dict(),
-        "recent_orders": [],  # Example data
-        "cart_items": []
-    })
+    pass
+
 
 @user_dashboard_bp.route('/dashboard/orders', methods=['GET'])
-@login_required
+@jwt_required()
 def user_orders():
     """Fetch user orders"""
-    orders = []  # Fetch orders from the database
-    return jsonify({"orders": orders})
+    pass
+
 
 @user_dashboard_bp.route('/dashboard/cart', methods=['GET'])
-@login_required
+@jwt_required()
 def user_cart():
     """Fetch user cart details"""
-    cart = []  # Fetch cart from the database
-    return jsonify({"cart": cart})
+    pass
+
 
 @user_dashboard_bp.route('/dashboard/profile', methods=['GET', 'PUT'])
-@login_required
+@jwt_required()
 def user_profile():
     """Fetch or update user profile"""
-    if request.method == 'GET':
-        return jsonify(current_user.to_dict())
-    elif request.method == 'PUT':
-        data = request.get_json()
-        current_user.update(**data)
-        return jsonify({"message": "Profile updated successfully"})
+    pass
