@@ -1,3 +1,6 @@
+"""
+A module for review model
+"""
 from . import db
 from datetime import datetime, timezone
 from .baseModel import BaseModel
