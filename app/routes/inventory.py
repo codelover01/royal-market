@@ -1,3 +1,6 @@
+"""
+A module that deals with inventory in the business
+"""
 from flask import Blueprint, request, jsonify
 from services.inventory_service import InventoryService
 
