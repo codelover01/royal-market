@@ -31,7 +31,10 @@ class InventoryService:
                 stock=stock
                 )
                 inventory.save()
-                return {"message": "Inventory added successfully", "id": inventory.id}
+                return {
+                    "message": "Inventory added successfully",
+                    "id": inventory.id
+                    }
             else:
                 return {"message": ""}
         except SQLAlchemyError as e:

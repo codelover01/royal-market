@@ -47,7 +47,9 @@ class CategoryService:
             if hasattr(category, key):
                 setattr(category, key, value)
             else:
-                raise AttributeError(f"'Category' object has no attribute '{key}'")
+                raise AttributeError(
+                    f"'Category' object has no attribute '{key}'"
+                    )
         db.session.commit()
         return category
 
