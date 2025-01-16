@@ -39,7 +39,9 @@ def create_review():
     product_id = data.get('product_id')
     service_id = data.get('service_id')
 
-    review, error = ReviewService.create_review(comment, rating, current_user.id, product_id, service_id)
+    review, error = ReviewService.create_review(
+        comment, rating, current_user.id, product_id, service_id
+        )
 
     if error:
         return jsonify({'message': error}), 400
@@ -52,7 +54,9 @@ def create_review():
     }), 201
 
 
-@review_bp.route('/get-reviews/<string:review_type>/<int:item_id>', methods=['GET'])
+@review_bp.route(
+        '/get-reviews/<string:review_type>/<int:item_id>',
+        methods=['GET'])
 def get_reviews(review_type, item_id):
     """Retrieve reviews for a specific product or service.
     Args:
@@ -70,10 +74,16 @@ def get_reviews(review_type, item_id):
     elif review_type == 'service':
         reviews = ReviewService.get_reviews_by_service(item_id)
     else:
-        return jsonify({'message': 'Invalid review type. Use "product" or "service".'}), 400
+        return jsonify(
+            {
+                'message': 'Invalid review type. Use "product" or "service".'
+             }), 400
 
     if not reviews:
-        return jsonify({'message': f'No reviews found for this {review_type}.'}), 404
+        return jsonify(
+            {
+                'message': f'No reviews found for this {review_type}.'
+             }), 404
 
     reviews_list = [{
         'id': review.id,
@@ -107,7 +117,10 @@ def update_review(review_id):
     review = Review.query.get_or_404(review_id)
 
     if review.user_id != current_user.id:
-        return jsonify({'message': 'You can only edit your own reviews.'}), 403
+        return jsonify(
+            {
+                'message': 'You can only edit your own reviews.'
+             }), 403
 
     updated_review, error = ReviewService.update_review(
         review,

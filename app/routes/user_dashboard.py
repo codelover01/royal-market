@@ -5,7 +5,8 @@ operations.
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-user_dashboard_bp = Blueprint('user_dashboard', __name__, url_prefix='/user')
+user_dashboard_bp = Blueprint(
+    'user_dashboard', __name__, url_prefix='/user')
 
 
 @user_dashboard_bp.route('/dashboard', methods=['GET'])

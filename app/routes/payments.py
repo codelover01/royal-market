@@ -37,7 +37,9 @@ def create_payment():
     if not all([order_id, payment_method, payment_amount]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    result = PaymentService.create_payment(order_id, payment_method, payment_amount)
+    result = PaymentService.create_payment(
+        order_id, payment_method, payment_amount
+        )
     return jsonify({"Payment successful.": result}), 200
 
 
