@@ -1,3 +1,6 @@
+"""
+A module for Order model
+"""
 from . import db
 from .baseModel import BaseModel
 from datetime import datetime, timezone
@@ -51,13 +54,27 @@ class Order(BaseModel):
     total_price = db.Column(db.Float, nullable=False)
     
     # Using Enums for status and payment_status
-    status = db.Column(db.Enum(OrderStatus), nullable=False, default=OrderStatus.PENDING)
-    payment_status = db.Column(db.Enum(PaymentStatus), nullable=False, default=PaymentStatus.UNPAID)
+    status = db.Column(
+        db.Enum(OrderStatus),
+        nullable=False,
+        default=OrderStatus.PENDING
+        )
+
+    payment_status = db.Column(
+        db.Enum(PaymentStatus),
+        nullable=False,
+        default=PaymentStatus.UNPAID
+        )
     
-    payment_method = db.Column(db.String(255), nullable=False)  # e.g., credit card, PayPal
+    payment_method = db.Column(db.String(255), nullable=False)
     shipping_address = db.Column(db.String(255), nullable=True)
-    order_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    delivery_date = db.Column(db.DateTime, nullable=True)
+    order_date = db.Column(
+        db.DateTime,
+        default=datetime.now(timezone.utc))
+    delivery_date = db.Column(
+        db.DateTime,
+        nullable=True
+        )
     
     # Relationships
     user = db.relationship('User', back_populates='orders')
@@ -79,4 +96,5 @@ class Order(BaseModel):
         )
 
     def __repr__(self):
+        """ Returns a string representaion for order object. """
         return f"<Order {self.id} - User: {self.user_id}, Status: {self.status.value}>"
