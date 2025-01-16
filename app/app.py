@@ -58,7 +58,7 @@ from routes.auth import auth_bp as auth_bp
 from services.reviews import review_bp as review_bp
 from app.routes.products import products_bp as products_bp
 from routes.generate_csrf import gen_csrf_bp as gen_csrf_bp
-from services.services import services_bp as services_bp
+from app.routes.services import services_bp as services_bp
 from routes.user_dashboard import user_dashboard_bp as user_dashboard_bp
 from routes.admin_dashboard import admin_dashboard_bp as admin_dashboard_bp
 from routes.wishlist import wishlist_bp as wishlist_bp
