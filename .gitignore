@@ -2,9 +2,7 @@
 .env
 __pycache__
 secrets_key.py
-test.py
 migrations
 tests
 test_file.py
 cookies.txt
-cop.yaml
