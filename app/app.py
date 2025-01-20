@@ -9,6 +9,7 @@ from flask import jsonify, make_response
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_jwt_extended import JWTManager
 import smtplib
+from models.users import User
 
 jwt = JWTManager()
 csrf = CSRFProtect()
@@ -25,18 +26,12 @@ FLASK_ENV = os.getenv('FLASK_ENV', 'development').lower()
 TESTING = os.getenv('TESTING', 'False').lower() == 'true'
 
 if TESTING:
-    app.config.from_object(TestConfig)  # Use test configuration
-    print("🚨 Using Test Configuration")
+    app.config.from_object(TestConfig)
 elif FLASK_ENV == 'production':
-    app.config.from_object(Config)  # Production Config
-    print("✅ Using Production Configuration")
+    app.config.from_object(Config)
 else:
-    app.config.from_object(Config)  # Default to development
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    app.config['SESSION_COOKIE_SECURE'] = False
-    app.config['JWT_TOKEN_LOCATION'] = ['headers', 'cookies', 'query_string']
-    app.config['JWT_HEADER_NAME'] = 'Authorization'
-    print("⚙️ Using Development Configuration")
+    app.config.from_object(Config)
+
 
 
 cors = CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "/*"}})
@@ -52,13 +47,13 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
  
 # Import blueprints
-from utils.email_utils import email_bp as email_bp
+# from utils.email_utils import email_bp as email_bp
 from routes.business import business_bp as business_bp
 from routes.auth import auth_bp as auth_bp
-from services.reviews import review_bp as review_bp
-from app.routes.products import products_bp as products_bp
+from routes.reviews import review_bp as review_bp
+from routes.products import products_bp as products_bp
 from routes.generate_csrf import gen_csrf_bp as gen_csrf_bp
-from app.routes.services import services_bp as services_bp
+from routes.services import services_bp as services_bp
 from routes.user_dashboard import user_dashboard_bp as user_dashboard_bp
 from routes.admin_dashboard import admin_dashboard_bp as admin_dashboard_bp
 from routes.wishlist import wishlist_bp as wishlist_bp
@@ -80,7 +75,7 @@ app.register_blueprint(wishlist_bp, url_prefix='/wishlist')
 app.register_blueprint(category_bp, url_prefix='/categories')
 app.register_blueprint(payment_bp, url_prefix='/payments')
 app.register_blueprint(inventory_bp, url_prefix='/inventory')
-app.register_blueprint(email_bp, url_prefix='/email')
+# app.register_blueprint(email_bp, url_prefix='/email')
 
 
 @app.before_request
@@ -138,5 +133,11 @@ def send_test_email():
         return f"Error sending email: {e}"
 
 
+# User lookup loader
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    """Load user from JWT data."""
+    user_id = jwt_data["sub"]  # `sub` contains the user ID in the JWT payload
+    return User.query.get(user_id)
 if __name__ == "__main__":
     app.run(debug=True)

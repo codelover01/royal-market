@@ -2,12 +2,11 @@
 A module that deals with admin operations.
 """
 from flask import Blueprint, jsonify, request
-from flask_login import current_user
-from models.users import User
-from models.products import Product
-from models.orders import Order
-from models.services import Service
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_current_user
+from services.admin_service import AdminService
+from routes.products import add_product, list_products
+from routes.services import add_service, list_services
+from services.order_service import OrderService
 
 
 admin_dashboard_bp = Blueprint(
@@ -18,7 +17,9 @@ admin_dashboard_bp = Blueprint(
 @jwt_required()
 def admin_dashboard():
     """Retrieve admin dashboard overview"""
-    pass
+    current_user = get_current_user()
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
 
 
 @admin_dashboard_bp.route(
@@ -27,7 +28,26 @@ def admin_dashboard():
 @jwt_required
 def admin_products():
     """View or add products"""
-    pass
+    if request.method == 'GET':
+        products = list_products()
+        return jsonify([{
+            "id": product.id,
+            "name": product.name,
+            "price": product.price
+        } for product in products]), 200
+
+    elif request.method == 'POST':
+        data = request.get_json()
+        if not data or 'name' not in data or 'price' not in data:
+            return jsonify({"error": "Invalid data"}), 400
+
+        product = add_product(data['name'], data['price'])
+        return jsonify({
+            "message": "Product created successfully",
+            "id": product.id,
+            "name": product.name,
+            "price": product.price
+        }), 201
 
 
 @admin_dashboard_bp.route(
@@ -36,7 +56,26 @@ def admin_products():
 @jwt_required
 def admin_services():
     """View or add services"""
-    pass
+    if request.method == 'GET':
+        services = list_services()
+        return jsonify([{
+            "id": service.id,
+            "name": service.name,
+            "price": service.price
+        } for service in services]), 200
+
+    elif request.method == 'POST':
+        data = request.get_json()
+        if not data or 'name' not in data or 'price' not in data:
+            return jsonify({"error": "Invalid data"}), 400
+
+        service = add_service(data['name'], data['price'])
+        return jsonify({
+            "message": "Service created successfully",
+            "id": service.id,
+            "name": service.name,
+            "price": service.price
+        }), 201
 
 
 @admin_dashboard_bp.route(
@@ -45,7 +84,13 @@ def admin_services():
 @jwt_required
 def admin_orders():
     """View and manage orders"""
-    pass
+    orders = OrderService.get_all_orders()
+    return jsonify([{
+        "id": order.id,
+        "status": order.status,
+        "total_amount": order.total_amount,
+        "date": order.date
+    } for order in orders]), 200
 
 
 @admin_dashboard_bp.route(
@@ -54,7 +99,14 @@ def admin_orders():
 @jwt_required
 def admin_users():
     """View all users"""
-    pass
+    users = AdminService.get_all_users()
+    return jsonify([{
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "role": user.role,
+        "status": user.status
+    } for user in users]), 200
 
 
 @admin_dashboard_bp.route(
@@ -64,3 +116,63 @@ def admin_users():
 def admin_analytics():
     """View analytics"""
     pass
+
+
+@admin_dashboard_bp.route('/dashboard/users', methods=['GET'])
+@jwt_required()
+def admin_users():
+    """View all users"""
+    users = AdminService.get_all_users()
+    return jsonify([{
+        'id': user.id,
+        'name': user.name,
+        'email': user.email,
+        'role': user.role
+    } for user in users]), 200
+
+
+@admin_dashboard_bp.route('/dashboard/users/<int:user_id>', methods=['GET'])
+@jwt_required()
+def admin_user_detail(user_id):
+    """Get a specific user details by ID"""
+    try:
+        user = AdminService.get_user_by_id(user_id)
+        return jsonify({
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'role': user.role
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
+
+@admin_dashboard_bp.route('/dashboard/users/<int:user_id>', methods=['PUT'])
+@jwt_required()
+def admin_update_user(user_id):
+    """Update a user role"""
+    data = request.get_json()
+    new_role = data.get('role')
+    if not new_role:
+        return jsonify({"error": "Role is required"}), 400
+
+    try:
+        user = AdminService.update_user_role(user_id, new_role)
+        return jsonify({
+            'id': user.id,
+            'name': user.name,
+            'role': user.role
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
+
+@admin_dashboard_bp.route('/dashboard/users/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+def admin_delete_user(user_id):
+    """Delete a user"""
+    try:
+        result = AdminService.delete_user(user_id)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404

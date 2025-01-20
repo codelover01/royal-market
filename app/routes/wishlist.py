@@ -1,12 +1,14 @@
-# routes/api_wishlist.py
+"""
+A module that handles user wishlist routes
+"""
 from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
+from flask_jwt_extended import get_current_user, jwt_required
 from services.wishlist import WishlistService
 
 wishlist_bp = Blueprint('wishlist', __name__, url_prefix='/wishlist')
 
 @wishlist_bp.route('/get-wishlist', methods=['GET'])
-@login_required
+@jwt_required()
 def get_wishlist():
     """Get all items in the user's wishlist (products and services).
     Args:
@@ -17,7 +19,8 @@ def get_wishlist():
         - 404 with empty user wishlist
         - 200 with successful result list.
     """
-    wishlist_items:WishlistService = WishlistService.find_by_user(current_user.id)
+    current_user = get_current_user()  # Get the currently authenticated user
+    wishlist_items = WishlistService.find_by_user(current_user.id)
     if not wishlist_items:
         return jsonify({'message': 'Your wishlist is empty.'}), 404
 
@@ -44,7 +47,7 @@ def get_wishlist():
     return jsonify({'wishlist': result}), 200
 
 @wishlist_bp.route('/add', methods=['POST'])
-@login_required
+@jwt_required()
 def add_to_wishlist():
     """Add a product or service to the wishlist.
     Args:
@@ -57,6 +60,7 @@ def add_to_wishlist():
         - status code 400 for missing produc_id or
         service_id
     """
+    current_user = get_current_user()  # Get the currently authenticated user
     data = request.get_json()
     product_id = data.get('product_id')
     service_id = data.get('service_id')
@@ -91,7 +95,7 @@ def add_to_wishlist():
     }), 201
 
 @wishlist_bp.route('/remove', methods=['POST'])
-@login_required
+@jwt_required()
 def remove_from_wishlist():
     """Remove a product or service from the wishlist.
     Args:
@@ -104,6 +108,7 @@ def remove_from_wishlist():
         - 404 for no product or service found
         - 200 for deleted product or service 
     """
+    current_user = get_current_user()  # Get the currently authenticated user
     data = request.get_json()
     product_id = data.get('product_id')
     service_id = data.get('service_id')

@@ -191,7 +191,3 @@ class User(BaseModel, UserMixin):
             return None
         return User.get_by_id(user_id)
 
-# Function to load user by ID (required for Flask-Login)
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)

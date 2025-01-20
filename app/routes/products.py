@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, redirect, url_for, Response
-from flask_login import current_user
+from flask_jwt_extended import get_current_user
 from models.products import Product
 from models.business import Business
 
@@ -28,6 +28,7 @@ def add_product():
     data = request.get_json()
     if not data:
         return jsonify({"error": "Invalid JSON"}), 400
+    current_user = get_current_user()
 
     # Fetch businesses for the current user
     businesses = Business.find_by_attributes(owner_id=current_user.id)
@@ -53,7 +54,7 @@ def add_product():
             stock = data['stock'],
             business_id = business.id
         )
-        product.save()  # Using BaseModel's save method
+        product.save()
         return jsonify({
             "message": "Product added successfully",
             "product": product.to_dict()
@@ -96,6 +97,8 @@ def delete_product(product_id) -> Response:
     try:
         # Fetch the product
         product: Product = Product.get_or_404(product_id)
+
+        current_user = get_current_user()
 
         # Ensure the product belons to the current user
         business = Business.find_first_object(
