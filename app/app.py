@@ -30,8 +30,7 @@ elif FLASK_ENV == 'production':
 else:
     app.config.from_object(Config)
 
-
-
+# App initializations
 cors = CORS(app, supports_credentials=True ,resources={r"/*": {"origins": "/*"}})
 jwt.init_app(app)
 bcrypt.init_app(app)
@@ -39,7 +38,6 @@ csrf.init_app(app)
 mail = Mail(app)
 mail.init_app(app)
 migrate = Migrate(app, db)
-
 db.init_app(app)
  
 # Import blueprints
