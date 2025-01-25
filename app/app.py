@@ -5,9 +5,8 @@ from models.users import db, bcrypt
 from flask_migrate import Migrate
 import os
 from flask import jsonify, make_response
-from flask_wtf.csrf import CSRFProtect, generate_csrf
-from flask_jwt_extended import JWTManager
-import smtplib
+from flask_wtf.csrf import CSRFProtect
+from flask_jwt_extended import JWTManager, get_jwt_identity
 from models.users import User
 
 jwt = JWTManager()
@@ -38,7 +37,7 @@ jwt.init_app(app)
 bcrypt.init_app(app)
 csrf.init_app(app)
 mail = Mail(app)
-#mail.init_app(app)
+mail.init_app(app)
 migrate = Migrate(app, db)
 
 db.init_app(app)
@@ -71,7 +70,6 @@ app.register_blueprint(wishlist_bp, url_prefix='/wishlist')
 app.register_blueprint(category_bp, url_prefix='/categories')
 app.register_blueprint(payment_bp, url_prefix='/payments')
 app.register_blueprint(inventory_bp, url_prefix='/inventory')
-# app.register_blueprint(email_bp, url_prefix='/email')
 
 
 @app.before_request
@@ -105,28 +103,42 @@ def csrf_protect():
 
 @app.route('/')
 def landing_page():
-    return "I am landing soon"
+    """ This is the landing page for each first
+    or registered users.(Current_user)
+    """
+    current_user = get_jwt_identity()
+    if current_user:
+        # Show personalized content for logged-in users
+        return jsonify({
+            "message": f"Welcome back, {current_user['username']}! You are now logged in."
+        })
+    else:
+        # Show general content for unauthenticated users
+        return jsonify({
+            "message": "Welcome to our app! Please log in or sign up to get started."
+        })
 
+# Home page.
 @app.route('/home', methods=['GET', 'POST'], strict_slashes=False)
 def home():
     """ Handles the homepage of the app"""
-    return "This is the home page"
+    current_user = get_jwt_identity()
+    if current_user:
+        response = {
+            "message": f"Welcome back, {current_user['username']}!",
+            "authenticated": True
+        }
+    else:
+        response = {
+            "message": "Welcome, please log in to access more features.",
+            "authenticated": False
+        }
+    return jsonify(response)
 
-
-@app.route('/send-test-email')
-def send_test_email():
-    try:
-        # Enable debugging
-        smtp = smtplib.SMTP('smtp.gmail.com', 587)
-        smtp.set_debuglevel(1)  # Enable debug output for SMTP connection
-        smtp.ehlo()
-        smtp.starttls()
-        smtp.login('royalmarketv1@gmail.com', 'dpqg aqlz pmdf prce')
-        smtp.sendmail('royalmarketv1@gmail.com', 'kinglovenoel@gmail.com', 'This is the royal market app')
-        smtp.quit()
-        return "Test email sent successfully!"
-    except Exception as e:
-        return f"Error sending email: {e}"
+# Page not found error
+@app.errorhandler(404)
+def page_not_found(error):
+    return jsonify({"error": "Page not found"}), 404
 
 
 # User lookup loader
@@ -135,5 +147,7 @@ def user_lookup_callback(_jwt_header, jwt_data):
     """Load user from JWT data."""
     user_id = jwt_data["sub"]  # `sub` contains the user ID in the JWT payload
     return User.query.get(user_id)
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
