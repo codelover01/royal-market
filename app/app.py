@@ -8,6 +8,7 @@ from flask import jsonify, make_response
 from flask_wtf.csrf import CSRFProtect
 from flask_jwt_extended import JWTManager, get_jwt_identity
 from models.users import User
+from flask import send_from_directory
 
 jwt = JWTManager()
 csrf = CSRFProtect()
@@ -132,6 +133,12 @@ def home():
             "authenticated": False
         }
     return jsonify(response)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    """" It's the favicon route. """
+    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/x-icon')
 
 # Page not found error
 @app.errorhandler(404)
