@@ -100,7 +100,7 @@ def csrf_protect():
         )
         return response
 
-
+# Landing page
 @app.route('/')
 def landing_page():
     """ This is the landing page for each first
