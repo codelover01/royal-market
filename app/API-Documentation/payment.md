@@ -14,20 +14,22 @@ Request Body:
   "payment_method": "string",  // Payment method (e.g., Credit Card, PayPal)
   "payment_amount": "integer"  // The amount to be paid
 }
+```
 
 Responses:
 400:
 If the request body is invalid or required fields are missing.
 Example:
-json
+```json
 { "message": "Invalid JSON data" }
+```
 
 200:
 On successful payment creation.
 Example:
-json
+```json
 { "Payment successful.": "result" }
-
+```
 
 2. Get Payment by ID
 URL: /payments/<payment_id>
@@ -40,7 +42,7 @@ Responses:
 200:
 If payment is found.
 Example:
-json
+```json
 {
   "id": "integer",
   "order_id": "integer",
@@ -49,13 +51,14 @@ json
   "payment_amount": "integer",
   "payment_status": "string"
 }
+```
 
 404:
 If the payment ID is not found.
 Example:
-json
+```json
 { "Payment details.": "result" }
-
+```
 
 3. Get All Payments
 URL: /payments/
@@ -65,7 +68,7 @@ Responses:
 200:
 If payments are found.
 Example:
-json
+```json
 {
   "Payments found": [
     {
@@ -78,19 +81,20 @@ json
     }
   ]
 }
+```
+
 404:
 If no payments are found.
 Example:
-json
-Copy code
+```json
 { "error": "No payments were found" }
+```
 
 500:
 For internal server errors.
-Example:
-json
+```json
 { "error": "Error message" }
-
+```
 
 4. Refund Payment
 URL: /payments/refund/<payment_id>
@@ -102,12 +106,12 @@ payment_id: The ID of the payment to be refunded.
 Responses:
 200:
 If the refund is successful.
-Example:
-json
+```json
 { "Successful payment refund.": "result" }
+```
 
 400:
 If the payment ID is invalid or missing.
-Example:
-json
+```json
 { "error": "Payment ID missing or Invalid" }
+```

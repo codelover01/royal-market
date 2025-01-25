@@ -1,8 +1,7 @@
 from flask import Flask, request
 from flask_mail import Mail, Message
 from flask_cors import CORS
-from flask_wtf.csrf import CSRFProtect
-from models.users import login_manager, db, bcrypt
+from models.users import db, bcrypt
 from flask_migrate import Migrate
 import os
 from flask import jsonify, make_response
@@ -43,11 +42,8 @@ mail = Mail(app)
 migrate = Migrate(app, db)
 
 db.init_app(app)
-login_manager.init_app(app)
-login_manager.login_view = 'auth.login'
  
 # Import blueprints
-# from utils.email_utils import email_bp as email_bp
 from routes.business import business_bp as business_bp
 from routes.auth import auth_bp as auth_bp
 from routes.reviews import review_bp as review_bp
@@ -95,11 +91,11 @@ def csrf_protect():
         
     # Set CSRF token if it's missing in the cookie
     if not csrf_token_cookie:
-        csrf_token = generate_csrf()
+        # csrf_token = generate_csrf()
         response = make_response()
         response.set_cookie(
             'csrf_token',
-            csrf_token,
+            # csrf_token,
             httponly=False,
             samesite='Lax',  # Use 'Strict' if you want stricter handling
             secure=False  # Set to True in production with HTTPS

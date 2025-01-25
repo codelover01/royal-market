@@ -12,7 +12,6 @@ Authentication: JWT required.
 Responses:
 200:
 If the wishlist contains items.
-Example:
 ```json
 {
   "wishlist": [
@@ -32,15 +31,15 @@ Example:
     }
   ]
 }
+```
 
 404:
 If the user's wishlist is empty.
-Example:
-json
+```json
 {
   "message": "Your wishlist is empty."
 }
-
+```
 
 2. Add to Wishlist
 URL: /wishlist/add
@@ -48,18 +47,18 @@ Method: POST
 Description: Adds a product or service to the authenticated user's wishlist.
 
 Request Body:
-json
+```json
 {
   "product_id": "integer",  // Product ID (optional)
   "service_id": "integer"   // Service ID (optional)
 }
+```
 
 Authentication: JWT required.
 Responses:
 201:
 On successful addition to the wishlist.
-Example:
-json
+```json
 {
   "message": "Product/Service added to your wishlist.",
   "wishlist_item": {
@@ -77,15 +76,15 @@ json
     }
   }
 }
+```
 
 400:
 If neither product_id nor service_id is provided.
-Example:
-json
+```json
 {
   "message": "Either product_id or service_id must be provided."
 }
-
+```
 
 3. Remove from Wishlist
 URL: /wishlist/remove
@@ -93,34 +92,35 @@ Method: POST
 Description: Removes a product or service from the authenticated user's wishlist.
 
 Request Body:
-json
+```json
 {
   "product_id": "integer",  // Product ID (optional)
   "service_id": "integer"   // Service ID (optional)
 }
+```
 
 Authentication: JWT required.
 Responses:
 200:
 On successful removal from the wishlist.
-Example:
-json
+```json
 {
   "message": "Product/Service removed from your wishlist."
 }
+```
 
 400:
 If neither product_id nor service_id is provided.
-Example:
-json
+```json
 {
   "message": "Either product_id or service_id must be provided."
 }
+```
 
 404:
 If the product or service is not found in the user's wishlist.
-Example:
-json
+```json
 {
   "message": "Product/Service not found in your wishlist."
 }
+```

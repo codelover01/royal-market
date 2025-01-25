@@ -31,7 +31,7 @@ def register():
         - JSON responses and their status codes
         - Jsonifies the successfully registered user with 201 status code
     """
-    # Debug CSRF Tokens
+    # # Debug CSRF Tokens
     csrf_header = request.headers.get('X-CSRFToken')
     csrf_cookie = request.cookies.get('csrf_token')
     logging.debug(f"CSRF Header Token: {csrf_header}")

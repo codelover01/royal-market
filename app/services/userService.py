@@ -75,7 +75,7 @@ class UserService:
         return cart
 
     @staticmethod
-    def update_user(user_id, username=None, email=None):
+    def update_user(id, username=None, email=None):
         """
         Update an existing user's information.
         Args:
@@ -86,7 +86,7 @@ class UserService:
         Returns:
             - User instance: The updated user.
         """
-        user = UserService.get_user_by_id(user_id)
+        user = UserService.get_user_by_id(id)
         
         if username:
             user.username = username
@@ -101,7 +101,7 @@ class UserService:
             raise ValueError(f"Error updating user: {str(e)}")
 
     @staticmethod
-    def delete_user(user_id):
+    def delete_user(id):
         """
         Deletes a user from the database.
         Args:
@@ -109,7 +109,7 @@ class UserService:
         Returns:
             - dict: A success message.
         """
-        user = UserService.get_user_by_id(user_id)
+        user = UserService.get_user_by_id(id)
         
         try:
             db.session.delete(user)

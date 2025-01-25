@@ -5,7 +5,8 @@ The auth blueprint handles all authentication-related processes for the applicat
 
 1. Register a New User
 **Endpoint:**
-`POST /auth/register/`
+`/auth/register/`
+method: POST
 
 ## Description:
 Registers a new user by taking required details and optionally additional fields like first and last name.
@@ -20,18 +21,21 @@ Registers a new user by taking required details and optionally additional fields
   "firstname": "string (optional)",
   "lastname": "string (optional)"
 }
+```
 Response:
 
 201 Created: User registered successfully.
-json
+```json
 {
   "message": "User registered successfully",
   "user": { "id": 1, "username": "johndoe", "email": "john@example.com" }
 }
+```
 
 400 Bad Request: Invalid input or data.
-json
+```json
 { "error": "Invalid JSON" }
+```
 500 Internal Server Error: Unexpected error.
 
 
@@ -44,24 +48,27 @@ Authenticates a user by verifying their email and password.
 
 Request Body:
 
-json
+```json
 {
   "email": "string (required)",
   "password": "string (required)"
 }
+```
 Response:
 
 200 OK: Login successful, returns access and refresh tokens.
-json
+```json
 {
   "message": "Login successful",
   "access_token": "string",
   "refresh_token": "string"
 }
+```
 
 401 Unauthorized: Invalid email or password.
-json
+```json
 { "error": "Invalid email or password" }
+```
 400 Bad Request: Missing or invalid data.
 500 Internal Server Error: Unexpected error.
 
@@ -79,9 +86,9 @@ Authorization: Bearer <access_token>
 Response:
 
 200 OK: Logout successful.
-json
+```json
 { "message": "Logout successful" }
-
+```
 
 4. Refresh Access Token
 Endpoint:
@@ -95,9 +102,9 @@ Headers:
 Authorization: Bearer <refresh_token>
 Response:
 200 OK: Returns a new access token.
-json
+```json
 { "access_token": "string" }
-
+```
 401 Unauthorized: Invalid or missing refresh token.
 
 
@@ -110,15 +117,17 @@ Sends a password reset email to the user.
 
 Request Body:
 
-json
+```json
 {
   "email": "string (required)"
 }
+```
 Response:
 
 200 OK: Reset email sent if the user exists.
-json
+```json
 { "message": "Check your email, a password reset email has been sent" }
+```
 400 Bad Request: Missing email field.
 
 
@@ -131,15 +140,17 @@ Resets the user's password using a token.
 
 Request Body:
 
-json
+```json
 {
   "password": "string (required)"
 }
+```
 Response:
 
 200 OK: Password reset successful.
-json
+```json
 { "message": "Password has been reset successfully." }
+```
 400 Bad Request: Invalid or expired token, or missing password field.
 
 
@@ -152,15 +163,17 @@ Sends a verification email to the user.
 
 Request Body:
 
-json
+```json
 {
   "email": "string (required)"
 }
+```
 Response:
 
 200 OK: Verification email sent.
-json
+```json
 { "message": "Check your email, a verification link has been sent." }
+```
 400 Bad Request: Missing email field.
 
 
@@ -174,9 +187,11 @@ Verifies a user's email using a token.
 Response:
 
 200 OK: Email verified successfully.
-json
+```json
 { "message": "Email has been verified successfully." }
+```
 
 400 Bad Request: Invalid or expired token.
-json
+```json
 { "message": "Invalid or expired token." }
+```

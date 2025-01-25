@@ -17,11 +17,14 @@ def get_csrf_token():
         Response with the token set in the set_cookie
     """
     csrf_token = generate_csrf() # Generate CSRF token
-    response = make_response(jsonify({'csrf_token': csrf_token}))
-    response.set_cookie(
-        'csrf_token', csrf_token, max_age=None , samesite='Lax', secure=False, httponly=False  # Secure=True for HTTPS
-    )
-    return response
+    print("CSRF Response Data:", csrf_token.data)
+    return jsonify({'csrf_token': csrf_token})
+    # response = make_response(jsonify({'csrf_token': csrf_token}))
+    # response.set_cookie(
+    #     'csrf_token', csrf_token, max_age=None , samesite='Lax', secure=False, httponly=False  # Secure=True for HTTPS
+    # )
+    # print("CSRF Response Data:", response.data)
+    # return response
 
 @gen_csrf_bp.before_request
 def csrf_protect():

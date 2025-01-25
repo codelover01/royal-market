@@ -41,6 +41,7 @@ json
     "owner_id": 1
   }
 }
+```
 400 Bad Request: Invalid JSON or missing required fields.
 404 Not Found: User not found.
 500 Internal Server Error: Unexpected error.
@@ -56,7 +57,7 @@ Updates the credentials of an existing business.
 Request Body:
 All fields are optional. If a field is not provided, its value will remain unchanged.
 
-json
+```json
 {
   "name": "Updated Business Name",
   "email": "updated@example.com",
@@ -65,13 +66,15 @@ json
   "online_available": false,
   "offline_available": true
 }
+```
 Responses:
 
 200 OK:
-json
+```json
 {
   "Message": "Business updated successfully."
 }
+```
 400 Bad Request: Invalid JSON or business not found.
 403 Forbidden: User does not own the business.
 500 Internal Server Error: Unexpected error.
@@ -88,12 +91,14 @@ Deletes a business from the database by its ID.
 Responses:
 
 `200 OK:`
-json
+```json
 {
   "message": "Business deleted successfully"
 }
+```
 403 Forbidden: User does not own the business.
 500 Internal Server Error: Unexpected error.
+
 4. Get User's Businesses
 Endpoint: /business/get_businessses
 Method: GET
@@ -105,7 +110,7 @@ Retrieves all businesses associated with the authenticated user.
 Responses:
 
 200 OK:
-json
+```json
 [
   {
     "message": "These are your business credentials.",
@@ -120,5 +125,6 @@ json
     "updated_at": "2023-01-02T12:00:00"
   }
 ]
+```
 404 Not Found: No businesses found for the user's account.
 500 Internal Server Error: Unexpected error.

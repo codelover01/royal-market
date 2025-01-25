@@ -29,6 +29,7 @@ The CSRF token is returned in the response body and also set in a cookie named c
 {
   "csrf_token": "<generated_csrf_token>"
 }
+```
 Cookie:
 
 csrf_token: The CSRF token is set with attributes:
@@ -40,7 +41,8 @@ This endpoint does not return errors under normal circumstances.
 
 
 2. CSRF Protection Middleware
-Description:
+
+# Description:
 Verifies the CSRF token provided in cookies and headers for POST, PUT, and DELETE requests.
 
 Request Headers:
@@ -58,16 +60,18 @@ Response:
 Success: Proceeds with the request if validation is successful.
 Error (400):
 If either token is missing:
-json
+```json
 {
   "error": "CSRF token missing"
 }
+```
 
 If the tokens do not match:
-json
+```json
 {
   "error": "CSRF token mismatch"
 }
+```
 
 
 3. Content Security Policy (CSP)
@@ -75,7 +79,6 @@ Description:
 Applies a Content Security Policy (CSP) to all responses to mitigate XSS attacks by blocking external scripts and unsafe object execution.
 
 CSP Header:
-
 http
 Content-Security-Policy: script-src 'self' 'strict-dynamic'; object-src 'none';
 Response Impact:
@@ -86,19 +89,18 @@ Description:
 Logs the CSRF tokens received in headers and cookies after every request for debugging purposes.
 
 Log Output:
-
 plaintext
 Request CSRF Token: <header_csrf_token>
 Cookie CSRF Token: <cookie_csrf_token>
 
-Common Errors
-400: CSRF Token Missing
+# Common Errors
+`400`: CSRF Token Missing
 Occurs when either the csrf_token cookie or the X-CSRFToken header is not provided in the request.
 
-400: CSRF Token Mismatch
+`400`: CSRF Token Mismatch
 Occurs when the csrf_token cookie value does not match the X-CSRFToken header value.
 
-Security Considerations
+# Security Considerations
 Secure Cookie: Use secure=True for the csrf_token cookie in production to ensure it is only transmitted over HTTPS.
 CSP: The strong CSP applied reduces the risk of XSS attacks by restricting external scripts.
 Logging: Avoid logging sensitive token data in production environments.

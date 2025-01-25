@@ -1,5 +1,7 @@
 """ A module that handles authentication services."""
 from models.users import User
+from utils.email_validator import is_valid_email
+
 
 class AuthService():
     """Manages the authentication service"""
@@ -16,6 +18,12 @@ class AuthService():
         Returns:
             The registered user after saving to the database.
         """
+
+        # Validate email format
+        email = data.get('email')
+        if not is_valid_email(email):
+            raise ValueError( "Invalid email format")
+
         # Check if passwords match
         password = data.get('password')
         confirm_password = data.get('confirm_password')

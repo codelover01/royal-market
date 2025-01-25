@@ -20,6 +20,8 @@ def admin_dashboard():
     current_user = get_current_user()
     if current_user.role != 'admin':
         return jsonify({"error": "Unauthorized access"}), 403
+    else:
+        return jsonify({"Admin {current_user} are welcome"}), 200
 
 
 @admin_dashboard_bp.route(
@@ -83,8 +85,11 @@ def admin_services():
         endpoint='admin_orders')
 @jwt_required
 def admin_orders():
-    """View and manage orders"""
+    """View all orders"""
     orders = OrderService.get_all_orders()
+
+    if not orders:
+        return jsonify({"error": "Invaild data"}), 400
     return jsonify([{
         "id": order.id,
         "status": order.status,
@@ -100,12 +105,15 @@ def admin_orders():
 def admin_users():
     """View all users"""
     users = AdminService.get_all_users()
+    if not users:
+        return jsonify({
+            "error": "Users not found."
+        }), 404
     return jsonify([{
         "id": user.id,
         "username": user.username,
         "email": user.email,
-        "role": user.role,
-        "status": user.status
+        "role": user.role
     } for user in users]), 200
 
 
@@ -116,20 +124,6 @@ def admin_users():
 def admin_analytics():
     """View analytics"""
     pass
-
-
-@admin_dashboard_bp.route('/dashboard/users', methods=['GET'])
-@jwt_required()
-def admin_users():
-    """View all users"""
-    users = AdminService.get_all_users()
-    return jsonify([{
-        'id': user.id,
-        'name': user.name,
-        'email': user.email,
-        'role': user.role
-    } for user in users]), 200
-
 
 @admin_dashboard_bp.route('/dashboard/users/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -147,9 +141,9 @@ def admin_user_detail(user_id):
         return jsonify({"error": str(e)}), 404
 
 
-@admin_dashboard_bp.route('/dashboard/users/<int:user_id>', methods=['PUT'])
+@admin_dashboard_bp.route('/dashboard/users/<int:id>', methods=['PUT'])
 @jwt_required()
-def admin_update_user(user_id):
+def admin_update_user(id):
     """Update a user role"""
     data = request.get_json()
     new_role = data.get('role')
@@ -157,22 +151,27 @@ def admin_update_user(user_id):
         return jsonify({"error": "Role is required"}), 400
 
     try:
-        user = AdminService.update_user_role(user_id, new_role)
+        user = AdminService.update_user_role(id, new_role)
         return jsonify({
             'id': user.id,
-            'name': user.name,
-            'role': user.role
+            'username': user.username,
+            'role': user.role,
+            'email': user.email
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 404
 
 
-@admin_dashboard_bp.route('/dashboard/users/<int:user_id>', methods=['DELETE'])
+@admin_dashboard_bp.route('/dashboard/users/<int:id>', methods=['DELETE'])
 @jwt_required()
-def admin_delete_user(user_id):
+def admin_delete_user(id):
     """Delete a user"""
     try:
-        result = AdminService.delete_user(user_id)
+        result = AdminService.delete_user(id)
+        if not result:
+            return jsonify({
+                "error": "User not found"
+            }), 404
         return jsonify(result), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 404
+        return jsonify({"error": str(e)}), 500

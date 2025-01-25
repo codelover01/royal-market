@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Application Configurations
 class Config:
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     SECRET_KEY = os.getenv("SECRET_KEY")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS")
@@ -27,7 +27,7 @@ class Config:
     SESSION_COOKIE_SAMESITE = os.getenv('SESSION_COOKIE_SAMESITE')
 
 
-    MAX_CONTENT_LENGTH = os.getenv('MAX_CONTENT_LENGTH')
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/uploads')
     ALLOWED_EXTENSIONS = os.getenv("ALLOWED_EXTENSIONS")
 
@@ -46,6 +46,6 @@ class Config:
 
 class TestConfig(Config):
     TESTING = os.getenv("TESTING")
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI_TEST")
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

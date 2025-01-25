@@ -15,20 +15,22 @@ Request Body:
   "service_id": "integer",  // The ID of the service
   "stock": "integer"  // The stock quantity
 }
+```
 
 Responses:
 400:
 If any of the required fields are missing.
 Example:
-json
+```json
 { "error": "Missing required fields" }
+```
 
 201:
 On successful inventory creation.
 Example:
-json
+```json
 { "result": "success_message" }
-
+```
 
 2. Get Inventory by ID
 URL: /inventory/<inventory_id>
@@ -41,7 +43,7 @@ Responses:
 200:
 If the inventory record is found.
 Example:
-json
+```json
 {
   "id": "integer",
   "product_id": "integer",
@@ -49,13 +51,14 @@ json
   "stock": "integer",
   "last_updated": "string"
 }
+```
 
 404:
 If the inventory ID is not found.
 Example:
-json
+```json
 { "error": "Inventory record not found" }
-
+```
 
 3. Get All Inventory
 URL: /inventory/
@@ -66,7 +69,7 @@ Responses:
 200:
 If inventory records are found.
 Example:
-json
+```json
 [
   {
     "id": "integer",
@@ -77,6 +80,7 @@ json
   },
   ...
 ]
+```
 
 
 4. Update Inventory Stock
@@ -87,24 +91,26 @@ URL Parameters:
 inventory_id: The ID of the inventory record to update.
 
 Request Body:
-json
+```json
 {
   "stock": "integer"  // New stock value
 }
+```
 
 Responses:
 400:
 If the stock value is missing.
 Example:
-json
+```json
 { "error": "Stock value is required" }
+```
 
 200:
 On successful stock update.
 Example:
-json
+```json
 { "result": "success_message" }
-
+```
 
 5. Delete Inventory
 URL: /inventory/delete/<inventory_id>
@@ -117,5 +123,6 @@ Responses:
 200:
 On successful deletion.
 Example:
-json
+```json
 { "result": "Inventory record deleted" }
+```

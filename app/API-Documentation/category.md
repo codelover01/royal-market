@@ -21,6 +21,7 @@ Request Body:
     "name": "Category Name",
     "description": "Category Description"
 }
+```
 Request Headers:
 
 Authorization: Bearer JWT token (for authenticated users).
@@ -28,24 +29,27 @@ Response:
 
 Success (201):
 
-json
+```json
 {
     "message": "Category successfully created.",
     "id": <category_id>,
     "name": "Category Name"
 }
+```
 Error (400): Invalid JSON data
 
-json
+```json
 {
     "message": "Invalid JSON data."
 }
+```
 
 Error (400): Other related errors
-json
+```json
 {
     "error": "Error message"
 }
+```
 
 
 2. Get All Categories
@@ -58,11 +62,12 @@ Fetches all the available categories.
 Response:
 
 Success (200):
-json
+```json
 [
     {"id": <category_id>, "name": "Category Name"},
     {"id": <category_id>, "name": "Category Name"}
 ]
+```
 
 
 3. Get Category by ID
@@ -78,18 +83,20 @@ category_id: The ID of the category to retrieve.
 Response:
 
 Success (200):
-json
+```json
 {
     "id": <category_id>,
     "name": "Category Name",
     "description": "Category Description"
 }
+```
 
 Error (404): Category not found
-json
+```json
 {
     "error": "Category not found"
 }
+```
 
 
 4. Update Category
@@ -103,41 +110,46 @@ Parameters:
 
 category_id: The ID of the category to update.
 Request Body:
-json
+```json
 {
     "name": "Updated Category Name",
     "description": "Updated Category Description"
 }
+```
 Request Headers:
 
 Authorization: Bearer JWT token (for authenticated users).
 Response:
 
 Success (200):
-json
+```json
 {
     "id": <category_id>,
     "name": "Updated Category Name",
     "description": "Updated Category Description"
 }
+```
 
 Error (400): Invalid JSON or no data provided
-json
+```json
 {
     "error": "No data provided or Invalid JSON data"
 }
+```
 
 Error (404): Category not found
-json
+```json
 {
     "error": "Category not found"
 }
+```
 
 Error (400): Other related errors
-json
+```json
 {
     "error": "Error message"
 }
+```
 
 
 5. Delete Category
@@ -156,17 +168,17 @@ Authorization: Bearer JWT token (for authenticated users).
 Response:
 
 Success (200):
-json
+```json
 {
     "message": "Category deleted successfully."
 }
-
+```
 Error (404): Category not found
-json
+```json
 {
     "error": "Category not found"
 }
-
+```
 
 6. List Products under a Category
 Endpoint:
@@ -181,18 +193,19 @@ category_id: The ID of the category to fetch products for.
 Response:
 
 Success (200):
-json
+```json
 [
     {"id": <product_id>, "name": "Product Name"},
     {"id": <product_id>, "name": "Product Name"}
 ]
+```
 
 Error (404): Category or products not found
-json
+```json
 {
     "error": "Category or products not found"
 }
-
+```
 
 7. List Services under a Category
 Endpoint:
@@ -207,18 +220,19 @@ category_id: The ID of the category to fetch services for.
 Response:
 
 Success (200):
-json
+```json
 [
     {"id": <service_id>, "name": "Service Name"},
     {"id": <service_id>, "name": "Service Name"}
 ]
+```
 
 Error (404): Category or services not found
-json
+```json
 {
     "error": "Category or services not found"
 }
-
+```
 
 8. List Businesses under a Category
 Endpoint:
@@ -233,17 +247,19 @@ category_id: The ID of the category to fetch businesses for.
 Response:
 
 Success (200):
-json
+```json
 [
     {"id": <business_id>, "name": "Business Name"},
     {"id": <business_id>, "name": "Business Name"}
 ]
+```
 
 Error (404): Category or businesses not found
-json
+```json
 {
     "error": "Category or businesses not found"
 }
+```
 
 Authentication
 Some endpoints require authentication through JWT tokens. The Authorization header must include the Bearer token for endpoints like POST /categories/create, PUT /categories/<category_id>, and DELETE /categories/<category_id>.

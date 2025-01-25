@@ -23,11 +23,11 @@ Request Body:
   "hourly_cost": 20,
   "duration": 30
 }
+```
 Response:
-
 Success (201):
 
-json
+```json
 {
   "message": "Service added successfully",
   "service": {
@@ -39,24 +39,28 @@ json
     "business_id": 1
   }
 }
+```
+
 Error (400): Invalid JSON or missing fields.
-json
+```json
 {
   "error": "Invalid JSON"
 }
+```
 
 Error (403): Unauthorized or invalid business ownership.
-json
+```json
 {
   "error": "Invalid business ID or unauthorized access."
 }
+```
 
 Error (500): Internal server error.
-json
+```json
 {
   "error": "Database error message here"
 }
-
+```
 
 2. List All Services
 Endpoint:
@@ -72,9 +76,8 @@ Request Parameters:
 None
 
 Response:
-
 Success (200):
-json
+```json
 {
   "services": [
     {
@@ -95,13 +98,14 @@ json
     }
   ]
 }
+```
 
 Error (500): Internal server error.
-json
+```json
 {
   "error": "Database error message here"
 }
-
+```
 
 3. Delete a Service
 Endpoint:
@@ -111,7 +115,6 @@ Description:
 Deletes a service by its unique ID, ensuring the current user owns the business it belongs to.
 
 Request Headers:
-
 Authorization: Bearer <JWT_TOKEN> (if required)
 Path Parameters:
 
@@ -119,40 +122,46 @@ service_id (integer): The ID of the service to delete.
 Response:
 
 Success (200):
-json
+```json
 {
   "message": "Service deleted successfully"
 }
+```
 
 Error (403): Unauthorized access to the service.
-json
+```json
 {
   "error": "Unauthorized: You don't own this service."
 }
+```
 
 Error (404): Service not found.
-json
+```json
 {
   "error": "Service with ID <service_id> not found."
 }
+```
 
 Error (500): Internal server error.
-json
+```json
 {
   "error": "Database error message here"
 }
+```
 
 Common Errors
 401: Unauthorized
 Occurs when the user is not authenticated.
-json
+```json
 {
   "error": "Unauthorized access. Please log in."
 }
+```
 
 500: Internal Server Error
 Occurs when there's an unhandled exception in the server.
-json
+```json
 {
   "error": "An unexpected error occurred. Please try again later."
 }
+```

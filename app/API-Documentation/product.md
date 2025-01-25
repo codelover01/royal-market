@@ -21,22 +21,26 @@ Responses:
     "message": "Product added successfully",
     "product": { "id": int, "name": str, "description": str, "price": float, "quantity": int, ... }
 }
+```
 
 400: Invalid JSON or missing business_id.
-json
+```json
 {"error": "Invalid JSON"}
-json
+```json
 {"error": "Business ID is required."}
+```
 
 403: User owns no businesses or business_id is invalid.
-json
+```json
 {"error": "You do not own any business"}
-json
+```json
 {"error": "Invalid business ID or you do not own this business."}
+```
 
 500: Internal server error.
-json
+```json
 {"error": "Detailed error message"}
+```
 
 
 2. List All Products
@@ -47,18 +51,19 @@ Description: Retrieves all products from the database.
 Responses:
 
 200: List of all products.
-json
+```json
 {
     "products": [
         {"id": int, "name": str, "description": str, "price": float, "quantity": int, ... },
         ...
     ]
 }
+```
 
 500: Internal server error.
-json
+```json
 {"error": "Detailed error message"}
-
+```
 
 3. Delete a Product
 Endpoint: /products/delete_products/<product_id>
@@ -66,18 +71,20 @@ Method: POST or DELETE
 Description: Deletes a specific product by ID if it belongs to a business owned by the current user.
 
 Path Parameter:
-
 product_id (int, required): The ID of the product to delete.
 Responses:
 
 200: Product deleted successfully.
-json
+```json
 {"message": "Product deleted successfully"}
+```
 
 403: Product does not belong to the user's business.
-json
+```json
 {"error": "Unauthorized: You do not own this product."}
+```
 
 500: Internal server error.
-json
+```json
 {"error": "Detailed error message"}
+```
