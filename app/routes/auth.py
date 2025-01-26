@@ -2,9 +2,6 @@
 A module that carries out all the apps related authentication processes.
 """
 
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
 from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required,
@@ -31,14 +28,8 @@ def register():
         - JSON responses and their status codes
         - Jsonifies the successfully registered user with 201 status code
     """
-    # # Debug CSRF Tokens
-    csrf_header = request.headers.get('X-CSRFToken')
-    csrf_cookie = request.cookies.get('csrf_token')
-    logging.debug(f"CSRF Header Token: {csrf_header}")
-    logging.debug(f"CSRF Cookie Token: {csrf_cookie}")
-
+    
     data = request.get_json()
-    logging.debug(f"Received data: {data}")
     if not data:
         return jsonify({'error': 'Invalid JSON'}), 400
     try:
@@ -49,10 +40,8 @@ def register():
             }), 201
     
     except ValueError as e:
-        logging.error(f"ValueError: {e}")
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        logging.exception("Unexpected error occurred during registration")
         return jsonify({"error": str(e)}), 500
 
 

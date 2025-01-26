@@ -1,3 +1,5 @@
+""" A module that admin's services
+"""
 from models.users import User
 
 class AdminService:
